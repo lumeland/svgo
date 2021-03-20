@@ -1,15 +1,13 @@
-'use strict';
+import { parseName } from "../lib/svgo/tools.js";
 
-const { parseName } = require('../lib/svgo/tools.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "removes unknown elements content and attributes, removes attrs with default values";
 
-exports.description =
-  'removes unknown elements content and attributes, removes attrs with default values';
-
-exports.params = {
+export const params = {
   unknownContent: true,
   unknownAttrs: true,
   defaultAttrs: true,
@@ -19,8 +17,8 @@ exports.params = {
   keepRoleAttr: false,
 };
 
-var collections = require('./_collections'),
-  elems = collections.elems,
+import * as collections from "./_collections.js";
+var elems = collections.elems,
   attrsGroups = collections.attrsGroups,
   elemsGroups = collections.elemsGroups,
   attrsGroupsDefaults = collections.attrsGroupsDefaults,
@@ -66,20 +64,20 @@ for (const elem of Object.values(elems)) {
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
+export function fn(item, params) {
   // elems w/o namespace prefix
-  if (item.type === 'element' && !parseName(item.name).prefix) {
+  if (item.type === "element" && !parseName(item.name).prefix) {
     var elem = item.name;
 
     // remove unknown element's content
     if (
       params.unknownContent &&
       elems[elem] && // make sure we know of this element before checking its children
-      elem !== 'foreignObject' // Don't check foreignObject
+      elem !== "foreignObject" // Don't check foreignObject
     ) {
       item.children.forEach(function (content, i) {
         if (
-          content.type === 'element' &&
+          content.type === "element" &&
           !parseName(content.name).prefix &&
           ((elems[elem].content && // Do we have a record of its permitted content?
             elems[elem].content.indexOf(content.name) === -1) ||
@@ -96,11 +94,11 @@ exports.fn = function (item, params) {
       for (const [name, value] of Object.entries(item.attributes)) {
         const { prefix } = parseName(name);
         if (
-          name !== 'xmlns' &&
-          (prefix === 'xml' || !prefix) &&
-          (!params.keepDataAttrs || name.indexOf('data-') != 0) &&
-          (!params.keepAriaAttrs || name.indexOf('aria-') != 0) &&
-          (!params.keepRoleAttr || name != 'role')
+          name !== "xmlns" &&
+          (prefix === "xml" || !prefix) &&
+          (!params.keepDataAttrs || name.indexOf("data-") != 0) &&
+          (!params.keepAriaAttrs || name.indexOf("aria-") != 0) &&
+          (!params.keepRoleAttr || name != "role")
         ) {
           if (
             // unknown attrs
@@ -125,4 +123,4 @@ exports.fn = function (item, params) {
       }
     }
   }
-};
+}

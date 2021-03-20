@@ -1,51 +1,49 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
+export const description = "converts style to attributes";
 
-exports.description = 'converts style to attributes';
-
-exports.params = {
+export const params = {
   keepImportant: false,
 };
 
-var stylingProps = require('./_collections').attrsGroups.presentation,
-  rEscape = '\\\\(?:[0-9a-f]{1,6}\\s?|\\r\\n|.)', // Like \" or \2051. Code points consume one space.
-  rAttr = '\\s*(' + g('[^:;\\\\]', rEscape) + '*?)\\s*', // attribute name like ‘fill’
+import { attrsGroups } from "./_collections.js";
+var stylingProps = attrsGroups.presentation,
+  rEscape = "\\\\(?:[0-9a-f]{1,6}\\s?|\\r\\n|.)", // Like \" or \2051. Code points consume one space.
+  rAttr = "\\s*(" + g("[^:;\\\\]", rEscape) + "*?)\\s*", // attribute name like ‘fill’
   rSingleQuotes = "'(?:[^'\\n\\r\\\\]|" + rEscape + ")*?(?:'|$)", // string in single quotes: 'smth'
   rQuotes = '"(?:[^"\\n\\r\\\\]|' + rEscape + ')*?(?:"|$)', // string in double quotes: "smth"
-  rQuotedString = new RegExp('^' + g(rSingleQuotes, rQuotes) + '$'),
+  rQuotedString = new RegExp("^" + g(rSingleQuotes, rQuotes) + "$"),
   // Parentheses, E.g.: url(data:image/png;base64,iVBO...).
   // ':' and ';' inside of it should be threated as is. (Just like in strings.)
-  rParenthesis =
-    '\\(' + g('[^\'"()\\\\]+', rEscape, rSingleQuotes, rQuotes) + '*?' + '\\)',
+  rParenthesis = "\\(" + g("[^'\"()\\\\]+", rEscape, rSingleQuotes, rQuotes) +
+    "*?" + "\\)",
   // The value. It can have strings and parentheses (see above). Fallbacks to anything in case of unexpected input.
-  rValue =
-    '\\s*(' +
+  rValue = "\\s*(" +
     g(
-      '[^!\'"();\\\\]+?',
+      "[^!'\"();\\\\]+?",
       rEscape,
       rSingleQuotes,
       rQuotes,
       rParenthesis,
-      '[^;]*?'
+      "[^;]*?",
     ) +
-    '*?' +
-    ')',
+    "*?" +
+    ")",
   // End of declaration. Spaces outside of capturing groups help to do natural trimming.
-  rDeclEnd = '\\s*(?:;\\s*|$)',
+  rDeclEnd = "\\s*(?:;\\s*|$)",
   // Important rule
-  rImportant = '(\\s*!important(?![-(\\w]))?',
+  rImportant = "(\\s*!important(?![-(\\w]))?",
   // Final RegExp to parse CSS declarations.
   regDeclarationBlock = new RegExp(
-    rAttr + ':' + rValue + rImportant + rDeclEnd,
-    'ig'
+    rAttr + ":" + rValue + rImportant + rDeclEnd,
+    "ig",
   ),
   // Comments expression. Honors escape sequences and strings.
   regStripComments = new RegExp(
-    g(rEscape, rSingleQuotes, rQuotes, '/\\*[^]*?\\*/'),
-    'ig'
+    g(rEscape, rSingleQuotes, rQuotes, "/\\*[^]*?\\*/"),
+    "ig",
   );
 
 /**
@@ -66,8 +64,8 @@ var stylingProps = require('./_collections').attrsGroups.presentation,
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
-  if (item.type === 'element' && item.attributes.style != null) {
+export function fn(item, params) {
+  if (item.type === "element" && item.attributes.style != null) {
     // ['opacity: 1', 'color: #000']
     let styles = [];
     const newAttributes = {};
@@ -76,17 +74,17 @@ exports.fn = function (item, params) {
     const styleValue = item.attributes.style.replace(
       regStripComments,
       (match) => {
-        return match[0] == '/'
-          ? ''
-          : match[0] == '\\' && /[-g-z]/i.test(match[1])
+        return match[0] == "/"
+          ? ""
+          : match[0] == "\\" && /[-g-z]/i.test(match[1])
           ? match[1]
           : match;
-      }
+      },
     );
 
     regDeclarationBlock.lastIndex = 0;
     // eslint-disable-next-line no-cond-assign
-    for (var rule; (rule = regDeclarationBlock.exec(styleValue)); ) {
+    for (var rule; (rule = regDeclarationBlock.exec(styleValue));) {
       if (!params.keepImportant || !rule[3]) {
         styles.push([rule[1], rule[2]]);
       }
@@ -116,15 +114,15 @@ exports.fn = function (item, params) {
 
       if (styles.length) {
         item.attributes.style = styles
-          .map((declaration) => declaration.join(':'))
-          .join(';');
+          .map((declaration) => declaration.join(":"))
+          .join(";");
       } else {
         delete item.attributes.style;
       }
     }
   }
-};
+}
 
 function g() {
-  return '(?:' + Array.prototype.join.call(arguments, '|') + ')';
+  return "(?:" + Array.prototype.join.call(arguments, "|") + ")";
 }

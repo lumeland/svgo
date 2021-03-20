@@ -1,12 +1,11 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "converts colors: rgb() to #rrggbb and #rrggbb to #rgb";
 
-exports.description = 'converts colors: rgb() to #rrggbb and #rrggbb to #rgb';
-
-exports.params = {
+export const params = {
   currentColor: false,
   names2hex: true,
   rgb2hex: true,
@@ -14,11 +13,11 @@ exports.params = {
   shortname: true,
 };
 
-var collections = require('./_collections'),
-  rNumber = '([+-]?(?:\\d*\\.\\d+|\\d+\\.?)%?)',
-  rComma = '\\s*,\\s*',
+import * as collections from "./_collections.js";
+var rNumber = "([+-]?(?:\\d*\\.\\d+|\\d+\\.?)%?)",
+  rComma = "\\s*,\\s*",
   regRGB = new RegExp(
-    '^rgb\\(\\s*' + rNumber + rComma + rNumber + rComma + rNumber + '\\s*\\)$'
+    "^rgb\\(\\s*" + rNumber + rComma + rNumber + rComma + rNumber + "\\s*\\)$",
   ),
   regHEX = /^#(([a-fA-F0-9])\2){3}$/,
   none = /\bnone\b/i;
@@ -49,8 +48,8 @@ var collections = require('./_collections'),
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
-  if (item.type === 'element') {
+export function fn(item, params) {
+  if (item.type === "element") {
     for (const [name, value] of Object.entries(item.attributes)) {
       if (collections.colorsProps.includes(name)) {
         let val = value;
@@ -58,7 +57,7 @@ exports.fn = function (item, params) {
 
         // Convert colors to currentColor
         if (params.currentColor) {
-          if (typeof params.currentColor === 'string') {
+          if (typeof params.currentColor === "string") {
             match = val === params.currentColor;
           } else if (params.currentColor.exec) {
             match = params.currentColor.exec(val);
@@ -66,7 +65,7 @@ exports.fn = function (item, params) {
             match = !val.match(none);
           }
           if (match) {
-            val = 'currentColor';
+            val = "currentColor";
           }
         }
 
@@ -78,7 +77,7 @@ exports.fn = function (item, params) {
         // Convert rgb() to long hex
         if (params.rgb2hex && (match = val.match(regRGB))) {
           match = match.slice(1, 4).map(function (m) {
-            if (m.indexOf('%') > -1) m = Math.round(parseFloat(m) * 2.55);
+            if (m.indexOf("%") > -1) m = Math.round(parseFloat(m) * 2.55);
 
             return Math.max(0, Math.min(m, 255));
           });
@@ -88,7 +87,7 @@ exports.fn = function (item, params) {
 
         // Convert long hex to short hex
         if (params.shorthex && (match = val.match(regHEX))) {
-          val = '#' + match[0][1] + match[0][3] + match[0][5];
+          val = "#" + match[0][1] + match[0][3] + match[0][5];
         }
 
         // Convert hex to short name
@@ -103,9 +102,7 @@ exports.fn = function (item, params) {
       }
     }
   }
-};
-
-/**
+} /**
  * Convert [r, g, b] to #rrggbb.
  *
  * @see https://gist.github.com/983535
@@ -118,10 +115,11 @@ exports.fn = function (item, params) {
  *
  * @author Jed Schmidt
  */
+
 function rgb2hex(rgb) {
   return (
-    '#' +
-    ('00000' + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16))
+    "#" +
+    ("00000" + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16))
       .slice(-6)
       .toUpperCase()
   );

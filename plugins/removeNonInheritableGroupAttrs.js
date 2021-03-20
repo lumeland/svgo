@@ -1,17 +1,15 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "removes non-inheritable group’s presentational attributes";
 
-exports.description =
-  'removes non-inheritable group’s presentational attributes';
-
-const {
-  inheritableAttrs,
+import {
   attrsGroups,
+  inheritableAttrs,
   presentationNonInheritableGroupAttrs,
-} = require('./_collections');
+} from "./_collections.js";
 
 /**
  * Remove non-inheritable group's "presentation" attributes.
@@ -21,8 +19,8 @@ const {
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
-  if (item.type === 'element' && item.name === 'g') {
+export function fn(item) {
+  if (item.type === "element" && item.name === "g") {
     for (const name of Object.keys(item.attributes)) {
       if (
         attrsGroups.presentation.includes(name) === true &&
@@ -33,4 +31,4 @@ exports.fn = function (item) {
       }
     }
   }
-};
+}

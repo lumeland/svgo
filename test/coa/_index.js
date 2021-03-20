@@ -1,20 +1,20 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const del = require('del');
-const { expect } = require('chai');
-const { Command } = require('commander');
-const svgo = require('../../lib/svgo/coa.js');
+const fs = require("fs");
+const path = require("path");
+const del = require("del");
+const { expect } = require("chai");
+const { Command } = require("commander");
+const svgo = require("../../lib/svgo/coa.js");
 
-const svgPath = path.resolve(__dirname, 'test.svg');
-const svgFolderPath = path.resolve(__dirname, 'testSvg');
-const svgFolderPathRecursively = path.resolve(__dirname, 'testSvgRecursively');
+const svgPath = path.resolve(__dirname, "test.svg");
+const svgFolderPath = path.resolve(__dirname, "testSvg");
+const svgFolderPathRecursively = path.resolve(__dirname, "testSvgRecursively");
 const svgFiles = [
-  path.resolve(__dirname, 'testSvg/test.svg'),
-  path.resolve(__dirname, 'testSvg/test.1.svg'),
+  path.resolve(__dirname, "testSvg/test.svg"),
+  path.resolve(__dirname, "testSvg/test.1.svg"),
 ];
-const tempFolder = 'temp';
+const tempFolder = "temp";
 const noop = () => {};
 
 const { checkIsDir } = svgo;
@@ -28,11 +28,11 @@ function runProgram(args) {
   return program.parseAsync([0, 1, ...args]);
 }
 
-describe('coa', function () {
+describe("coa", function () {
   let output;
 
   beforeEach(async () => {
-    output = '';
+    output = "";
     await del(tempFolder);
     await fs.promises.mkdir(tempFolder);
   });
@@ -80,118 +80,118 @@ describe('coa', function () {
           (checkIsDir(path.join(folderPath, name))
             ? calcFolderSvgWeight(path.join(folderPath, name))
             : 0),
-        0
+        0,
       );
   }
 
-  it('should work properly with string input', async () => {
+  it("should work properly with string input", async () => {
     await runProgram([
-      '--string',
-      fs.readFileSync(svgPath, 'utf8'),
-      '--output',
-      'temp.svg',
-      '--quiet',
+      "--string",
+      fs.readFileSync(svgPath, "utf8"),
+      "--output",
+      "temp.svg",
+      "--quiet",
     ]);
-    await del('temp.svg');
+    await del("temp.svg");
   });
 
-  it('should optimize folder', async () => {
+  it("should optimize folder", async () => {
     const initWeight = calcFolderSvgWeight(svgFolderPath);
     await runProgram([
-      '--folder',
+      "--folder",
       svgFolderPath,
-      '--output',
+      "--output",
       tempFolder,
-      '--quiet',
+      "--quiet",
     ]);
     const optimizedWeight = calcFolderSvgWeight(svgFolderPath);
     expect(optimizedWeight).gt(0);
     expect(initWeight).lte(optimizedWeight);
   });
 
-  it('should optimize folder recursively', async () => {
+  it("should optimize folder recursively", async () => {
     const initWeight = calcFolderSvgWeight(svgFolderPathRecursively);
     await runProgram([
-      '--folder',
+      "--folder",
       svgFolderPathRecursively,
-      '--output',
+      "--output",
       tempFolder,
-      '--quiet',
-      '--recursive',
+      "--quiet",
+      "--recursive",
     ]);
     const optimizedWeight = calcFolderSvgWeight(svgFolderPathRecursively);
     expect(optimizedWeight).gt(0);
     expect(initWeight).lte(optimizedWeight);
   });
 
-  it('should optimize file', async () => {
+  it("should optimize file", async () => {
     const initialFileLength = fs.readFileSync(
-      path.resolve(__dirname, 'test.svg')
+      path.resolve(__dirname, "test.svg"),
     ).length;
-    await runProgram(['--input', svgPath, '--output', 'temp.svg', '--quiet']);
-    const optimizedFileLength = fs.readFileSync('temp.svg').length;
+    await runProgram(["--input", svgPath, "--output", "temp.svg", "--quiet"]);
+    const optimizedFileLength = fs.readFileSync("temp.svg").length;
     expect(optimizedFileLength).lte(initialFileLength);
-    await del('temp.svg');
+    await del("temp.svg");
   });
 
-  it('should optimize several files', async () => {
+  it("should optimize several files", async () => {
     const initWeight = calcFolderSvgWeight(svgFolderPath);
     await runProgram([
-      '--input',
+      "--input",
       ...svgFiles,
-      '--output',
+      "--output",
       tempFolder,
-      '--quiet',
+      "--quiet",
     ]);
     const optimizedWeight = calcFolderSvgWeight(tempFolder);
     expect(optimizedWeight).gt(0);
     expect(optimizedWeight).lte(initWeight);
-    await del('temp.svg');
+    await del("temp.svg");
   });
 
-  it('should optimize file from process.stdin', async () => {
-    const initialFile = fs.readFileSync(path.resolve(__dirname, 'test.svg'));
-    const stdin = require('mock-stdin').stdin();
+  it("should optimize file from process.stdin", async () => {
+    const initialFile = fs.readFileSync(path.resolve(__dirname, "test.svg"));
+    const stdin = require("mock-stdin").stdin();
     setTimeout(() => {
-      stdin.send(initialFile, 'ascii').end();
+      stdin.send(initialFile, "ascii").end();
     }, 1000);
     try {
       await runProgram([
-        '--input',
-        '-',
-        '--output',
-        'temp.svg',
-        '--string',
-        fs.readFileSync(svgPath, 'utf8'),
-        '--quiet',
+        "--input",
+        "-",
+        "--output",
+        "temp.svg",
+        "--string",
+        fs.readFileSync(svgPath, "utf8"),
+        "--quiet",
       ]);
     } finally {
-      const optimizedFileLength = fs.readFileSync('temp.svg').length;
+      const optimizedFileLength = fs.readFileSync("temp.svg").length;
       expect(optimizedFileLength).lte(initialFile.length);
-      await del('temp.svg');
+      await del("temp.svg");
     }
   });
 
-  it('should optimize folder, when it stated in input', async () => {
+  it("should optimize folder, when it stated in input", async () => {
     const initWeight = calcFolderSvgWeight(svgFolderPath);
     await runProgram([
-      '--input',
+      "--input",
       svgFolderPath,
-      '--output',
+      "--output",
       tempFolder,
-      '--quiet',
+      "--quiet",
     ]);
     let optimizedWeight = calcFolderSvgWeight(svgFolderPath);
     expect(optimizedWeight).lte(initWeight);
   });
 
-  it('should throw error when stated in input folder does not exist', async () => {
+  it("should throw error when stated in input folder does not exist", async () => {
     replaceConsoleError();
     try {
       await runProgram([
-        '--input',
-        svgFolderPath + 'temp',
-        '--output',
+        "--input",
+        svgFolderPath + "temp",
+        "--output",
         tempFolder,
       ]);
     } catch (error) {
@@ -200,17 +200,17 @@ describe('coa', function () {
     }
   });
 
-  describe('stdout', () => {
-    it('should show file content when no output set', async () => {
+  describe("stdout", () => {
+    it("should show file content when no output set", async () => {
       replaceConsoleLog();
       try {
         await runProgram([
-          '--string',
-          fs.readFileSync(svgPath, 'utf8'),
-          '--output',
-          '-',
-          '--datauri',
-          'unenc',
+          "--string",
+          fs.readFileSync(svgPath, "utf8"),
+          "--output",
+          "-",
+          "--datauri",
+          "unenc",
         ]);
       } finally {
         restoreConsoleLog();
@@ -218,34 +218,34 @@ describe('coa', function () {
       }
     });
 
-    it('should show message when the folder is empty', async () => {
-      const emptyFolderPath = path.resolve(__dirname, 'testSvgEmpty');
+    it("should show message when the folder is empty", async () => {
+      const emptyFolderPath = path.resolve(__dirname, "testSvgEmpty");
       if (!fs.existsSync(emptyFolderPath)) {
         fs.mkdirSync(emptyFolderPath);
       }
       try {
-        await runProgram(['--folder', emptyFolderPath, '--quiet']);
+        await runProgram(["--folder", emptyFolderPath, "--quiet"]);
       } catch (error) {
         expect(error.message).to.match(/No SVG files/);
       }
     });
 
-    it('should show message when folder does not consists any svg files', async () => {
+    it("should show message when folder does not consists any svg files", async () => {
       try {
         await runProgram([
-          '--folder',
-          path.resolve(__dirname, 'testFolderWithNoSvg'),
-          '--quiet',
+          "--folder",
+          path.resolve(__dirname, "testFolderWithNoSvg"),
+          "--quiet",
         ]);
       } catch (error) {
         expect(error.message).to.match(/No SVG files have been found/);
       }
     });
 
-    it('should show plugins', async () => {
+    it("should show plugins", async () => {
       replaceConsoleLog();
       try {
-        await runProgram(['--show-plugins']);
+        await runProgram(["--show-plugins"]);
       } finally {
         restoreConsoleLog();
         expect(output).to.match(/Currently available plugins:/);

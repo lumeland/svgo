@@ -1,16 +1,14 @@
-'use strict';
+import { csso } from "../deps.js";
+import { traverse } from "../lib/xast.js";
 
-const csso = require('csso');
-const { traverse } = require('../lib/xast.js');
+export const type = "full";
 
-exports.type = 'full';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "minifies styles and removes unused styles based on usage data";
 
-exports.description =
-  'minifies styles and removes unused styles based on usage data';
-
-exports.params = {
+export const params = {
   // ... CSSO options goes here
 
   // additional
@@ -27,7 +25,7 @@ exports.params = {
  *
  * @author strarsis <strarsis@gmail.com>
  */
-exports.fn = function (ast, options) {
+export function fn(ast, options) {
   options = options || {};
 
   var minifyOptionsForStylesheet = cloneObject(options);
@@ -38,20 +36,20 @@ exports.fn = function (ast, options) {
   minifyOptionsForAttribute.usage = null;
 
   elems.forEach(function (elem) {
-    if (elem.isElem('style')) {
+    if (elem.isElem("style")) {
       if (
-        elem.children[0].type === 'text' ||
-        elem.children[0].type === 'cdata'
+        elem.children[0].type === "text" ||
+        elem.children[0].type === "cdata"
       ) {
         const styleCss = elem.children[0].value;
         const minified = csso.minify(styleCss, minifyOptionsForStylesheet).css;
         // preserve cdata if necessary
         // TODO split cdata -> text optimisation into separate plugin
-        if (styleCss.indexOf('>') >= 0 || styleCss.indexOf('<') >= 0) {
-          elem.children[0].type = 'cdata';
+        if (styleCss.indexOf(">") >= 0 || styleCss.indexOf("<") >= 0) {
+          elem.children[0].type = "cdata";
           elem.children[0].value = minified;
         } else {
-          elem.children[0].type = 'text';
+          elem.children[0].type = "text";
           elem.children[0].value = minified;
         }
       }
@@ -61,13 +59,13 @@ exports.fn = function (ast, options) {
 
       elem.attributes.style = csso.minifyBlock(
         elemStyle,
-        minifyOptionsForAttribute
+        minifyOptionsForAttribute,
       ).css;
     }
   });
 
   return ast;
-};
+}
 
 function cloneObject(obj) {
   return { ...obj };
@@ -76,8 +74,8 @@ function cloneObject(obj) {
 function findStyleElems(ast) {
   const nodesWithStyles = [];
   traverse(ast, (node) => {
-    if (node.type === 'element') {
-      if (node.name === 'style' && node.children.length !== 0) {
+    if (node.type === "element") {
+      if (node.name === "style" && node.children.length !== 0) {
         nodesWithStyles.push(node);
       } else if (node.attributes.style != null) {
         nodesWithStyles.push(node);
@@ -88,7 +86,7 @@ function findStyleElems(ast) {
 }
 
 function shouldFilter(options, name) {
-  if ('usage' in options === false) {
+  if ("usage" in options === false) {
     return true;
   }
 
@@ -110,8 +108,8 @@ function collectUsageData(ast, options) {
   };
 
   traverse(ast, (node) => {
-    if (node.type === 'element') {
-      if (node.name === 'script') {
+    if (node.type === "element") {
+      if (node.name === "script") {
         safe = false;
       }
 
@@ -123,7 +121,7 @@ function collectUsageData(ast, options) {
 
       if (node.attributes.class != null) {
         node.attributes.class
-          .replace(/^\s+|\s+$/g, '')
+          .replace(/^\s+|\s+$/g, "")
           .split(/\s+/)
           .forEach((className) => {
             rawData.classes[className] = true;

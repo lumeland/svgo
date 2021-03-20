@@ -1,10 +1,8 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
-
-exports.description = 'removes XML processing instructions';
+export const description = "removes XML processing instructions";
 
 /**
  * Remove XML Processing Instruction.
@@ -17,9 +15,9 @@ exports.description = 'removes XML processing instructions';
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
-  if (item.type === 'instruction' && item.name === 'xml') {
+export function fn(item) {
+  if (item.type === "instruction" && item.name === "xml") {
     return false;
   }
   return true;
-};
+}

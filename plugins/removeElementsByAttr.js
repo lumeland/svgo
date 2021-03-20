@@ -1,13 +1,11 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
+export const description =
+  "removes arbitrary elements by ID or className (disabled by default)";
 
-exports.description =
-  'removes arbitrary elements by ID or className (disabled by default)';
-
-exports.params = {
+export const params = {
   id: [],
   class: [],
 };
@@ -51,16 +49,16 @@ exports.params = {
  *
  * @author Eli Dupuis (@elidupuis)
  */
-exports.fn = function (item, params) {
+export function fn(item, params) {
   // wrap params in an array if not already
-  ['id', 'class'].forEach(function (key) {
+  ["id", "class"].forEach(function (key) {
     if (!Array.isArray(params[key])) {
       params[key] = [params[key]];
     }
   });
 
   // abort if current item is no an element
-  if (item.type !== 'element') {
+  if (item.type !== "element") {
     return;
   }
 
@@ -71,7 +69,7 @@ exports.fn = function (item, params) {
 
   // remove element if it's `class` contains any of the configured `class` params
   if (item.attributes.class && params.class.length !== 0) {
-    const classList = item.attributes.class.split(' ');
+    const classList = item.attributes.class.split(" ");
     return params.class.some((item) => classList.includes(item)) === false;
   }
-};
+}

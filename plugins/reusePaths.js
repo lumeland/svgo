@@ -1,16 +1,13 @@
-'use strict';
+import { traverse } from "../lib/xast.js";
+import JSAPI from "../lib/svgo/jsAPI.js";
 
-const { traverse } = require('../lib/xast.js');
-const JSAPI = require('../lib/svgo/jsAPI');
+export const type = "full";
 
-exports.type = 'full';
+export const active = false;
 
-exports.active = false;
-
-exports.description =
-  'Finds <path> elements with the same d, fill, and ' +
-  'stroke, and converts them to <use> elements ' +
-  'referencing a single <path> def.';
+export const description = "Finds <path> elements with the same d, fill, and " +
+  "stroke, and converts them to <use> elements " +
+  "referencing a single <path> def.";
 
 /**
  * Finds <path> elements with the same d, fill, and stroke, and converts them to
@@ -18,22 +15,22 @@ exports.description =
  *
  * @author Jacob Howcroft
  */
-exports.fn = function (root) {
+export function fn(root) {
   const seen = new Map();
   let count = 0;
   const defs = [];
   traverse(root, (node) => {
     if (
-      node.type !== 'element' ||
-      node.name !== 'path' ||
+      node.type !== "element" ||
+      node.name !== "path" ||
       node.attributes.d == null
     ) {
       return;
     }
     const d = node.attributes.d;
-    const fill = node.attributes.fill || '';
-    const stroke = node.attributes.stroke || '';
-    const key = d + ';s:' + stroke + ';f:' + fill;
+    const fill = node.attributes.fill || "";
+    const stroke = node.attributes.stroke || "";
+    const key = d + ";s:" + stroke + ";f:" + fill;
     const hasSeen = seen.get(key);
     if (!hasSeen) {
       seen.set(key, { elem: node, reused: false });
@@ -42,7 +39,7 @@ exports.fn = function (root) {
     if (!hasSeen.reused) {
       hasSeen.reused = true;
       if (hasSeen.elem.attributes.id == null) {
-        hasSeen.elem.attributes.id = 'reuse-' + count++;
+        hasSeen.elem.attributes.id = "reuse-" + count++;
       }
       defs.push(hasSeen.elem);
     }
@@ -51,12 +48,12 @@ exports.fn = function (root) {
   if (defs.length > 0) {
     const defsTag = new JSAPI(
       {
-        type: 'element',
-        name: 'defs',
+        type: "element",
+        name: "defs",
         attributes: {},
         children: [],
       },
-      root
+      root,
     );
     root.children[0].spliceContent(0, 0, defsTag);
     for (let def of defs) {
@@ -78,15 +75,14 @@ exports.fn = function (root) {
     }
   }
   return root;
-};
+} /** */
 
-/** */
 function convertToUse(item, href) {
-  item.renameElem('use');
+  item.renameElem("use");
   delete item.attributes.d;
   delete item.attributes.stroke;
   delete item.attributes.fill;
-  item.attributes['xlink:href'] = '#' + href;
+  item.attributes["xlink:href"] = "#" + href;
   delete item.pathJS;
   return item;
 }

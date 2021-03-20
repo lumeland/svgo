@@ -1,15 +1,13 @@
-'use strict';
+import { computeStyle } from "../lib/style.js";
+import { intersects, js2path, path2js } from "./_path.js";
 
-const { computeStyle } = require('../lib/style.js');
-const { path2js, js2path, intersects } = require('./_path.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description = "merges multiple paths in one if possible";
 
-exports.description = 'merges multiple paths in one if possible';
-
-exports.params = {
+export const params = {
   collapseRepeated: true,
   force: false,
   leadingZero: true,
@@ -25,8 +23,8 @@ exports.params = {
  *
  * @author Kir Belevich, Lev Solntsev
  */
-exports.fn = function (item, params) {
-  if (item.type !== 'element' || item.children.length === 0) return;
+export function fn(item, params) {
+  if (item.type !== "element" || item.children.length === 0) return;
 
   let prevContentItem = null;
   let prevContentItemKeys = null;
@@ -34,19 +32,19 @@ exports.fn = function (item, params) {
   item.children = item.children.filter(function (contentItem) {
     if (
       prevContentItem &&
-      prevContentItem.isElem('path') &&
+      prevContentItem.isElem("path") &&
       prevContentItem.children.length === 0 &&
       prevContentItem.attributes.d != null &&
-      contentItem.isElem('path') &&
+      contentItem.isElem("path") &&
       contentItem.children.length === 0 &&
       contentItem.attributes.d != null
     ) {
       const computedStyle = computeStyle(contentItem);
       // keep path to not break markers
       if (
-        computedStyle['marker-start'] ||
-        computedStyle['marker-mid'] ||
-        computedStyle['marker-end']
+        computedStyle["marker-start"] ||
+        computedStyle["marker-mid"] ||
+        computedStyle["marker-end"]
       ) {
         return true;
       }
@@ -55,11 +53,10 @@ exports.fn = function (item, params) {
       }
 
       const contentItemAttrs = Object.keys(contentItem.attributes);
-      const equalData =
-        prevContentItemKeys.length == contentItemAttrs.length &&
+      const equalData = prevContentItemKeys.length == contentItemAttrs.length &&
         contentItemAttrs.every(function (key) {
           return (
-            key == 'd' ||
+            key == "d" ||
             (prevContentItem.attributes[key] != null &&
               prevContentItem.attributes[key] == contentItem.attributes[key])
           );
@@ -77,4 +74,4 @@ exports.fn = function (item, params) {
     prevContentItemKeys = null;
     return true;
   });
-};
+}

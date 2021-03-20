@@ -1,10 +1,8 @@
-'use strict';
+export const type = "full";
 
-exports.type = 'full';
+export const active = false;
 
-exports.active = false;
-
-exports.description = 'adds classnames to an outer <svg> element';
+export const description = "adds classnames to an outer <svg> element";
 
 var ENOCLS = `Error in plugin "addClassesToSVGElement": absent parameters.
 It should have a list of classes in "classNames" or one "className".
@@ -32,7 +30,7 @@ plugins:
  *
  * @author April Arcus
  */
-exports.fn = function (data, params) {
+export function fn(data, params) {
   if (
     !params ||
     !(
@@ -47,9 +45,9 @@ exports.fn = function (data, params) {
   var classNames = params.classNames || [params.className],
     svg = data.children[0];
 
-  if (svg.isElem('svg')) {
+  if (svg.isElem("svg")) {
     svg.class.add.apply(svg.class, classNames);
   }
 
   return data;
-};
+}

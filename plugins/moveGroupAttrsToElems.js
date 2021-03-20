@@ -1,13 +1,12 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "moves some group attributes to the content elements";
 
-exports.description = 'moves some group attributes to the content elements';
-
-var collections = require('./_collections.js'),
-  pathElems = collections.pathElems.concat(['g', 'text']),
+import * as collections from "./_collections.js";
+var pathElems = collections.pathElems.concat(["g", "text"]),
   referencesProps = collections.referencesProps;
 
 /**
@@ -29,25 +28,25 @@ var collections = require('./_collections.js'),
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
+export function fn(item) {
   // move group transform attr to content's pathElems
   if (
-    item.type === 'element' &&
-    item.name === 'g' &&
+    item.type === "element" &&
+    item.name === "g" &&
     item.children.length !== 0 &&
     item.attributes.transform != null &&
     Object.entries(item.attributes).some(
-      ([name, value]) =>
-        referencesProps.includes(name) && value.includes('url(')
-    ) === false &&
+        ([name, value]) =>
+          referencesProps.includes(name) && value.includes("url("),
+      ) === false &&
     item.children.every(
-      (inner) => inner.isElem(pathElems) && !inner.hasAttr('id')
+      (inner) => inner.isElem(pathElems) && !inner.hasAttr("id"),
     )
   ) {
     for (const inner of item.children) {
       const value = item.attributes.transform;
       if (inner.attributes.transform != null) {
-        inner.attributes.transform = value + ' ' + inner.attributes.transform;
+        inner.attributes.transform = value + " " + inner.attributes.transform;
       } else {
         inner.attributes.transform = value;
       }
@@ -55,4 +54,4 @@ exports.fn = function (item) {
 
     delete item.attributes.transform;
   }
-};
+}

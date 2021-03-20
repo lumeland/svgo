@@ -1,64 +1,45 @@
-'use strict';
-
-const FS = require('fs');
-const PATH = require('path');
-const { optimize } = require('../lib/svgo');
-const filepath = PATH.resolve(__dirname, 'test.svg');
+import { optimize } from "../lib/svgo.js";
+const filepath = "examples/test.svg";
 const config = {
   plugins: [
-    'cleanupAttrs',
-    'removeDoctype',
-    'removeXMLProcInst',
-    'removeComments',
-    'removeMetadata',
-    'removeTitle',
-    'removeDesc',
-    'removeUselessDefs',
-    'removeEditorsNSData',
-    'removeEmptyAttrs',
-    'removeHiddenElems',
-    'removeEmptyText',
-    'removeEmptyContainers',
-    // 'removeViewBox',
-    'cleanupEnableBackground',
-    'convertStyleToAttrs',
-    'convertColors',
-    'convertPathData',
-    'convertTransform',
-    'removeUnknownsAndDefaults',
-    'removeNonInheritableGroupAttrs',
-    'removeUselessStrokeAndFill',
-    'removeUnusedNS',
-    'cleanupIDs',
-    'cleanupNumericValues',
-    'moveElemsAttrsToGroup',
-    'moveGroupAttrsToElems',
-    'collapseGroups',
+    "cleanupAttrs",
+    "removeDoctype",
+    "removeXMLProcInst",
+    "removeComments",
+    "removeMetadata",
+    "removeTitle",
+    "removeDesc",
+    "removeUselessDefs",
+    "removeEditorsNSData",
+    "removeEmptyAttrs",
+    "removeHiddenElems",
+    "removeEmptyText",
+    "removeEmptyContainers",
+    "removeViewBox",
+    "cleanupEnableBackground",
+    "convertStyleToAttrs",
+    "convertColors",
+    "convertPathData",
+    "convertTransform",
+    "removeUnknownsAndDefaults",
+    "removeNonInheritableGroupAttrs",
+    "removeUselessStrokeAndFill",
+    "removeUnusedNS",
+    "cleanupIDs",
+    "cleanupNumericValues",
+    "moveElemsAttrsToGroup",
+    "moveGroupAttrsToElems",
+    "collapseGroups",
     // 'removeRasterImages',
-    'mergePaths',
-    'convertShapeToPath',
-    'sortAttrs',
-    'removeDimensions',
-    { name: 'removeAttrs', params: { attrs: '(stroke|fill)' } },
+    "mergePaths",
+    "convertShapeToPath",
+    "sortAttrs",
+    "removeDimensions",
+    { name: "removeAttrs", params: { attrs: "(stroke|fill)" } },
   ],
 };
 
-FS.readFile(filepath, 'utf8', function (err, data) {
-  if (err) {
-    throw err;
-  }
+const data = await Deno.readTextFile(filepath);
+const result = optimize(data, { path: filepath, ...config });
 
-  const result = optimize(data, { path: filepath, ...config });
-
-  console.log(result);
-
-  // {
-  //     // optimized SVG data string
-  //     data: '<svg width="10" height="20">test</svg>'
-  //     // additional info such as width/height
-  //     info: {
-  //         width: '10',
-  //         height: '20'
-  //     }
-  // }
-});
+console.log(result);

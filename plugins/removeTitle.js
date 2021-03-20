@@ -1,10 +1,8 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
-
-exports.description = 'removes <title>';
+export const description = "removes <title>";
 
 /**
  * Remove <title>.
@@ -16,6 +14,6 @@ exports.description = 'removes <title>';
  *
  * @author Igor Kalashnikov
  */
-exports.fn = function (item) {
-  return !item.isElem('title');
-};
+export function fn(item) {
+  return !item.isElem("title");
+}

@@ -1,12 +1,11 @@
-'use strict';
+export const type = "perItemReverse";
 
-exports.type = 'perItemReverse';
+export const active = true;
 
-exports.active = true;
+export const description = "removes empty container elements";
 
-exports.description = 'removes empty container elements';
-
-var container = require('./_collections').elemsGroups.container;
+import { elemsGroups } from "./_collections.js";
+var container = elemsGroups.container;
 
 /**
  * Remove empty containers.
@@ -24,17 +23,17 @@ var container = require('./_collections').elemsGroups.container;
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
+export function fn(item) {
   return (
     item.isElem(container) === false ||
-    (item.type === 'element' && item.children.length !== 0) ||
-    item.isElem('svg') ||
+    (item.type === "element" && item.children.length !== 0) ||
+    item.isElem("svg") ||
     // empty patterns may contain reusable configuration
-    (item.isElem('pattern') && Object.keys(item.attributes).length !== 0) ||
+    (item.isElem("pattern") && Object.keys(item.attributes).length !== 0) ||
     // The 'g' may not have content, but the filter may cause a rectangle
     // to be created and filled with pattern.
-    (item.isElem('g') && item.hasAttr('filter')) ||
+    (item.isElem("g") && item.hasAttr("filter")) ||
     // empty <mask> hides masked element
-    (item.isElem('mask') && item.hasAttr('id'))
+    (item.isElem("mask") && item.hasAttr("id"))
   );
-};
+}

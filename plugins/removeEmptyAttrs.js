@@ -1,12 +1,10 @@
-'use strict';
+import { attrsGroups } from "./_collections.js";
 
-const { attrsGroups } = require('./_collections.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
-
-exports.description = 'removes empty attributes';
+export const description = "removes empty attributes";
 
 /**
  * Remove attributes with empty values.
@@ -16,11 +14,11 @@ exports.description = 'removes empty attributes';
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
-  if (item.type === 'element') {
+export function fn(item) {
+  if (item.type === "element") {
     for (const [name, value] of Object.entries(item.attributes)) {
       if (
-        value === '' &&
+        value === "" &&
         // empty conditional processing attributes prevents elements from rendering
         attrsGroups.conditionalProcessing.includes(name) === false
       ) {
@@ -28,4 +26,4 @@ exports.fn = function (item) {
       }
     }
   }
-};
+}

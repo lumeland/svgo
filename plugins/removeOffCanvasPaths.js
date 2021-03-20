@@ -1,18 +1,15 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
+export const description =
+  "removes elements that are drawn outside of the viewbox (disabled by default)";
 
-exports.description =
-  'removes elements that are drawn outside of the viewbox (disabled by default)';
+import JSAPI from "../lib/svgo/jsAPI.js";
 
-const JSAPI = require('../lib/svgo/jsAPI.js');
+import { intersects, path2js } from "./_path.js";
 
-var _path = require('./_path.js'),
-  intersects = _path.intersects,
-  path2js = _path.path2js,
-  viewBox,
+var viewBox,
   viewBoxJS;
 
 /**
@@ -23,11 +20,11 @@ var _path = require('./_path.js'),
  *
  * @author JoshyPHP
  */
-exports.fn = function (item) {
+export function fn(item) {
   if (
-    item.isElem('path') &&
+    item.isElem("path") &&
     item.attributes.d != null &&
-    typeof viewBox !== 'undefined'
+    typeof viewBox !== "undefined"
   ) {
     // Consider that any item with a transform attribute or a M instruction
     // within the viewBox is visible
@@ -39,27 +36,26 @@ exports.fn = function (item) {
     if (pathJS.length === 2) {
       // Use a closed clone of the path if it's too short for intersects()
       pathJS = JSON.parse(JSON.stringify(pathJS));
-      pathJS.push({ instruction: 'z' });
+      pathJS.push({ instruction: "z" });
     }
 
     return intersects(viewBoxJS, pathJS);
   }
-  if (item.isElem('svg')) {
+  if (item.isElem("svg")) {
     parseViewBox(item);
   }
 
   return true;
-};
-
-/**
+} /**
  * Test whether given item or any of its ancestors has a transform attribute.
  *
  * @param {String} path
  * @return {Boolean}
  */
+
 function hasTransform(item) {
   return (
-    item.hasAttr('transform') ||
+    item.hasAttr("transform") ||
     (item.parentNode && hasTransform(item.parentNode))
   );
 }
@@ -70,7 +66,7 @@ function hasTransform(item) {
  * @param {Object} svg svg element item
  */
 function parseViewBox(svg) {
-  var viewBoxData = '';
+  var viewBoxData = "";
   if (svg.attributes.viewBox != null) {
     // Remove commas and plus signs, normalize and trim whitespace
     viewBoxData = svg.attributes.viewBox;
@@ -80,13 +76,13 @@ function parseViewBox(svg) {
 
   // Remove commas and plus signs, normalize and trim whitespace
   viewBoxData = viewBoxData
-    .replace(/[,+]|px/g, ' ')
-    .replace(/\s+/g, ' ')
-    .replace(/^\s*|\s*$/g, '');
+    .replace(/[,+]|px/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/^\s*|\s*$/g, "");
 
   // Ensure that the dimensions are 4 values separated by space
   var m = /^(-?\d*\.?\d+) (-?\d*\.?\d+) (\d*\.?\d+) (\d*\.?\d+)$/.exec(
-    viewBoxData
+    viewBoxData,
   );
   if (!m) {
     return;
@@ -101,10 +97,10 @@ function parseViewBox(svg) {
   };
 
   var path = new JSAPI({
-    type: 'element',
-    name: 'path',
+    type: "element",
+    name: "path",
     attributes: {
-      d: 'M' + m[1] + ' ' + m[2] + 'h' + m[3] + 'v' + m[4] + 'H' + m[1] + 'z',
+      d: "M" + m[1] + " " + m[2] + "h" + m[3] + "v" + m[4] + "H" + m[1] + "z",
     },
     content: [],
   });

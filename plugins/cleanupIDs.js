@@ -1,81 +1,80 @@
-'use strict';
+import { traverse, traverseBreak } from "../lib/xast.js";
+import { parseName } from "../lib/svgo/tools.js";
 
-const { traverse, traverseBreak } = require('../lib/xast.js');
-const { parseName } = require('../lib/svgo/tools.js');
+export const type = "full";
 
-exports.type = 'full';
+export const active = true;
 
-exports.active = true;
+export const description = "removes unused IDs and minifies used";
 
-exports.description = 'removes unused IDs and minifies used';
-
-exports.params = {
+export const params = {
   remove: true,
   minify: true,
-  prefix: '',
+  prefix: "",
   preserve: [],
   preservePrefixes: [],
   force: false,
 };
 
-var referencesProps = new Set(require('./_collections').referencesProps),
-  regReferencesUrl = /\burl\(("|')?#(.+?)\1\)/,
+import { referencesProps } from "./_collections.js";
+
+var regReferencesUrl = /\burl\(("|')?#(.+?)\1\)/,
   regReferencesHref = /^#(.+?)$/,
   regReferencesBegin = /(\w+)\./,
-  styleOrScript = ['style', 'script'],
+  styleOrScript = ["style", "script"],
   generateIDchars = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z',
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
   ],
   maxIDindex = generateIDchars.length - 1;
 
@@ -88,7 +87,7 @@ var referencesProps = new Set(require('./_collections').referencesProps),
  *
  * @author Kir Belevich
  */
-exports.fn = function (root, params) {
+export function fn(root, params) {
   var currentID,
     currentIDstring,
     IDs = new Map(),
@@ -99,17 +98,16 @@ exports.fn = function (root, params) {
         ? params.preserve
         : params.preserve
         ? [params.preserve]
-        : []
+        : [],
     ),
     preserveIDPrefixes = new Set(
-      Array.isArray(params.preservePrefixes)
-        ? params.preservePrefixes
-        : params.preservePrefixes
+      Array.isArray(params.preservePrefixes) ? params.preservePrefixes
+      : params.preservePrefixes
         ? [params.preservePrefixes]
-        : []
+        : [],
     ),
-    idValuePrefix = '#',
-    idValuePostfix = '.';
+    idValuePrefix = "#",
+    idValuePostfix = ".";
 
   traverse(root, (node) => {
     if (hasStyleOrScript === true) {
@@ -124,10 +122,10 @@ exports.fn = function (root, params) {
       }
 
       // Don't remove IDs if the whole SVG consists only of defs.
-      if (node.type === 'element' && node.name === 'svg') {
+      if (node.type === "element" && node.name === "svg") {
         let hasDefsOnly = true;
         for (const child of node.children) {
-          if (child.type !== 'element' || child.name !== 'defs') {
+          if (child.type !== "element" || child.name !== "defs") {
             hasDefsOnly = false;
             break;
           }
@@ -139,13 +137,13 @@ exports.fn = function (root, params) {
     }
 
     // …and don't remove any ID if yes
-    if (node.type === 'element') {
+    if (node.type === "element") {
       for (const [name, value] of Object.entries(node.attributes)) {
         let key;
         let match;
 
         // save IDs
-        if (name === 'id') {
+        if (name === "id") {
           key = value;
           if (IDs.has(key)) {
             delete node.attributes.id; // remove repeated id
@@ -156,13 +154,13 @@ exports.fn = function (root, params) {
           // save references
           const { local } = parseName(name);
           if (
-            referencesProps.has(name) &&
+            referencesProps.includes(name) &&
             (match = value.match(regReferencesUrl))
           ) {
             key = match[2]; // url() reference
           } else if (
-            (local === 'href' && (match = value.match(regReferencesHref))) ||
-            (name === 'begin' && (match = value.match(regReferencesBegin)))
+            (local === "href" && (match = value.match(regReferencesHref))) ||
+            (name === "begin" && (match = value.match(regReferencesBegin)))
           ) {
             key = match[1]; // href reference
           }
@@ -190,7 +188,7 @@ exports.fn = function (root, params) {
         do {
           currentIDstring = getIDstring(
             (currentID = generateID(currentID)),
-            params
+            params,
           );
         } while (idPreserved(currentIDstring));
 
@@ -199,13 +197,13 @@ exports.fn = function (root, params) {
         for (const { element, name, value } of refs) {
           element.attributes[name] = value.includes(idValuePrefix)
             ? value.replace(
-                idValuePrefix + key,
-                idValuePrefix + currentIDstring
-              )
+              idValuePrefix + key,
+              idValuePrefix + currentIDstring,
+            )
             : value.replace(
-                key + idValuePostfix,
-                currentIDstring + idValuePostfix
-              );
+              key + idValuePostfix,
+              currentIDstring + idValuePostfix,
+            );
         }
       }
       // don't remove referenced IDs
@@ -221,15 +219,14 @@ exports.fn = function (root, params) {
     }
   }
   return root;
-};
-
-/**
+} /**
  * Check if an ID starts with any one of a list of strings.
  *
  * @param {Array} of prefix strings
  * @param {String} current ID
  * @return {Boolean} if currentID starts with one of the strings in prefixArray
  */
+
 function idMatchesPrefix(prefixArray, currentID) {
   if (!currentID) return false;
 
@@ -272,5 +269,5 @@ function generateID(currentID) {
  */
 function getIDstring(arr, params) {
   var str = params.prefix;
-  return str + arr.map((i) => generateIDchars[i]).join('');
+  return str + arr.map((i) => generateIDchars[i]).join("");
 }

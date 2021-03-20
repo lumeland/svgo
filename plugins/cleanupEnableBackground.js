@@ -1,13 +1,11 @@
-'use strict';
+import { traverse } from "../lib/xast.js";
 
-const { traverse } = require('../lib/xast.js');
+export const type = "full";
 
-exports.type = 'full';
+export const active = true;
 
-exports.active = true;
-
-exports.description =
-  'remove or cleanup enable-background attribute when possible';
+export const description =
+  "remove or cleanup enable-background attribute when possible";
 
 /**
  * Remove or cleanup enable-background attr which coincides with a width/height box.
@@ -24,21 +22,22 @@ exports.description =
  *
  * @author Kir Belevich
  */
-exports.fn = function (root) {
-  const regEnableBackground = /^new\s0\s0\s([-+]?\d*\.?\d+([eE][-+]?\d+)?)\s([-+]?\d*\.?\d+([eE][-+]?\d+)?)$/;
+export function fn(root) {
+  const regEnableBackground =
+    /^new\s0\s0\s([-+]?\d*\.?\d+([eE][-+]?\d+)?)\s([-+]?\d*\.?\d+([eE][-+]?\d+)?)$/;
   let hasFilter = false;
-  const elems = ['svg', 'mask', 'pattern'];
+  const elems = ["svg", "mask", "pattern"];
 
   traverse(root, (node) => {
-    if (node.type === 'element') {
+    if (node.type === "element") {
       if (
         elems.includes(node.name) &&
-        node.attributes['enable-background'] != null &&
+        node.attributes["enable-background"] != null &&
         node.attributes.width != null &&
         node.attributes.height != null
       ) {
-        const match = node.attributes['enable-background'].match(
-          regEnableBackground
+        const match = node.attributes["enable-background"].match(
+          regEnableBackground,
         );
 
         if (match) {
@@ -46,15 +45,15 @@ exports.fn = function (root) {
             node.attributes.width === match[1] &&
             node.attributes.height === match[3]
           ) {
-            if (node.name === 'svg') {
-              delete node.attributes['enable-background'];
+            if (node.name === "svg") {
+              delete node.attributes["enable-background"];
             } else {
-              node.attributes['enable-background'] = 'new';
+              node.attributes["enable-background"] = "new";
             }
           }
         }
       }
-      if (node.name === 'filter') {
+      if (node.name === "filter") {
         hasFilter = true;
       }
     }
@@ -62,12 +61,12 @@ exports.fn = function (root) {
 
   if (hasFilter === false) {
     traverse(root, (node) => {
-      if (node.type === 'element') {
+      if (node.type === "element") {
         //we don't need 'enable-background' if we have no filters
-        delete node.attributes['enable-background'];
+        delete node.attributes["enable-background"];
       }
     });
   }
 
   return root;
-};
+}

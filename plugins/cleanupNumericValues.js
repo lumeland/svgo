@@ -1,21 +1,20 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "rounds numeric values to the fixed precision, removes default ‘px’ units";
 
-exports.description =
-  'rounds numeric values to the fixed precision, removes default ‘px’ units';
-
-exports.params = {
+export const params = {
   floatPrecision: 3,
   leadingZero: true,
   defaultPx: true,
   convertToPx: true,
 };
 
-var regNumericValues = /^([-+]?\d*\.?\d+([eE][-+]?\d+)?)(px|pt|pc|mm|cm|m|in|ft|em|ex|%)?$/,
-  removeLeadingZero = require('../lib/svgo/tools').removeLeadingZero,
+import { removeLeadingZero } from "../lib/svgo/tools.js";
+var regNumericValues =
+    /^([-+]?\d*\.?\d+([eE][-+]?\d+)?)(px|pt|pc|mm|cm|m|in|ft|em|ex|%)?$/,
   absoluteLengths = {
     // relative to px
     cm: 96 / 2.54,
@@ -35,8 +34,8 @@ var regNumericValues = /^([-+]?\d*\.?\d+([eE][-+]?\d+)?)(px|pt|pc|mm|cm|m|in|ft|
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
-  if (item.type === 'element') {
+export function fn(item, params) {
+  if (item.type === "element") {
     var floatPrecision = params.floatPrecision;
 
     if (item.attributes.viewBox != null) {
@@ -46,12 +45,12 @@ exports.fn = function (item, params) {
           var num = +value;
           return isNaN(num) ? value : +num.toFixed(floatPrecision);
         })
-        .join(' ');
+        .join(" ");
     }
 
     for (const [name, value] of Object.entries(item.attributes)) {
       // The `version` attribute is a text string and cannot be rounded
-      if (name === 'version') {
+      if (name === "version") {
         continue;
       }
 
@@ -61,17 +60,17 @@ exports.fn = function (item, params) {
       if (match) {
         // round it to the fixed precision
         var num = +(+match[1]).toFixed(floatPrecision),
-          units = match[3] || '';
+          units = match[3] || "";
 
         // convert absolute values to pixels
         if (params.convertToPx && units && units in absoluteLengths) {
           var pxNum = +(absoluteLengths[units] * match[1]).toFixed(
-            floatPrecision
+            floatPrecision,
           );
 
           if (String(pxNum).length < match[0].length) {
             num = pxNum;
-            units = 'px';
+            units = "px";
           }
         }
 
@@ -81,12 +80,12 @@ exports.fn = function (item, params) {
         }
 
         // remove default 'px' units
-        if (params.defaultPx && units === 'px') {
-          units = '';
+        if (params.defaultPx && units === "px") {
+          units = "";
         }
 
         item.attributes[name] = num + units;
       }
     }
   }
-};
+}

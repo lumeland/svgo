@@ -1,17 +1,15 @@
-'use strict';
-
 // TODO implement as separate plugin
 
-const {
-  transformsMultiply,
+import {
   transform2js,
   transformArc,
-} = require('./_transforms.js');
-const { removeLeadingZero } = require('../lib/svgo/tools.js');
-const { referencesProps, attrsGroupsDefaults } = require('./_collections.js');
+  transformsMultiply,
+} from "./_transforms.js";
+import { removeLeadingZero } from "../lib/svgo/tools.js";
+import { attrsGroupsDefaults, referencesProps } from "./_collections.js";
 
 const regNumericValues = /[-+]?(\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g;
-const defaultStrokeWidth = attrsGroupsDefaults.presentation['stroke-width'];
+const defaultStrokeWidth = attrsGroupsDefaults.presentation["stroke-width"];
 
 /**
  * Apply transformation(s) to the Path data.
@@ -21,36 +19,37 @@ const defaultStrokeWidth = attrsGroupsDefaults.presentation['stroke-width'];
  * @param {Object} params whether to apply transforms to stroked lines and transform precision (used for stroke width)
  * @return {Array} output path data
  */
-const applyTransforms = (elem, pathData, params) => {
+export function applyTransforms(elem, pathData, params) {
   // if there are no 'stroke' attr and references to other objects such as
   // gradiends or clip-path which are also subjects to transform.
   if (
     elem.attributes.transform == null ||
-    elem.attributes.transform === '' ||
+    elem.attributes.transform === "" ||
     // styles are not considered when applying transform
     // can be fixed properly with new style engine
     elem.attributes.style != null ||
     Object.entries(elem.attributes).some(
       ([name, value]) =>
-        referencesProps.includes(name) && value.includes('url(')
+        referencesProps.includes(name) && value.includes("url("),
     )
   ) {
     return;
   }
 
   const matrix = transformsMultiply(transform2js(elem.attributes.transform));
-  const stroke = elem.computedAttr('stroke');
-  const id = elem.computedAttr('id');
+  const stroke = elem.computedAttr("stroke");
+  const id = elem.computedAttr("id");
   const transformPrecision = params.transformPrecision;
 
-  if (stroke && stroke != 'none') {
+  if (stroke && stroke != "none") {
     if (
       !params.applyTransformsStroked ||
       ((matrix.data[0] != matrix.data[3] ||
         matrix.data[1] != -matrix.data[2]) &&
         (matrix.data[0] != -matrix.data[3] || matrix.data[1] != matrix.data[2]))
-    )
+    ) {
       return;
+    }
 
     // "stroke-width" should be inside the part with ID, otherwise it can be overrided in <use>
     if (id) {
@@ -58,9 +57,9 @@ const applyTransforms = (elem, pathData, params) => {
       let hasStrokeWidth = false;
 
       do {
-        if (idElem.hasAttr('stroke-width')) hasStrokeWidth = true;
+        if (idElem.hasAttr("stroke-width")) hasStrokeWidth = true;
       } while (
-        !idElem.hasAttr('id', id) &&
+        !idElem.hasAttr("id", id) &&
         !hasStrokeWidth &&
         (idElem = idElem.parentNode)
       );
@@ -69,40 +68,41 @@ const applyTransforms = (elem, pathData, params) => {
     }
 
     const scale = +Math.sqrt(
-      matrix.data[0] * matrix.data[0] + matrix.data[1] * matrix.data[1]
+      matrix.data[0] * matrix.data[0] + matrix.data[1] * matrix.data[1],
     ).toFixed(transformPrecision);
 
     if (scale !== 1) {
-      const strokeWidth =
-        elem.computedAttr('stroke-width') || defaultStrokeWidth;
+      const strokeWidth = elem.computedAttr("stroke-width") ||
+        defaultStrokeWidth;
 
       if (
-        elem.attributes['vector-effect'] == null ||
-        elem.attributes['vector-effect'] !== 'non-scaling-stroke'
+        elem.attributes["vector-effect"] == null ||
+        elem.attributes["vector-effect"] !== "non-scaling-stroke"
       ) {
-        if (elem.attributes['stroke-width'] != null) {
-          elem.attributes['stroke-width'] = elem.attributes['stroke-width']
+        if (elem.attributes["stroke-width"] != null) {
+          elem.attributes["stroke-width"] = elem.attributes["stroke-width"]
             .trim()
             .replace(regNumericValues, (num) => removeLeadingZero(num * scale));
         } else {
           elem.attributes[
-            'stroke-width'
-          ] = strokeWidth.replace(regNumericValues, (num) =>
-            removeLeadingZero(num * scale)
+            "stroke-width"
+          ] = strokeWidth.replace(
+            regNumericValues,
+            (num) => removeLeadingZero(num * scale),
           );
         }
 
-        if (elem.attributes['stroke-dashoffset'] != null) {
-          elem.attributes['stroke-dashoffset'] = elem.attributes[
-            'stroke-dashoffset'
+        if (elem.attributes["stroke-dashoffset"] != null) {
+          elem.attributes["stroke-dashoffset"] = elem.attributes[
+            "stroke-dashoffset"
           ]
             .trim()
             .replace(regNumericValues, (num) => removeLeadingZero(num * scale));
         }
 
-        if (elem.attributes['stroke-dasharray'] != null) {
-          elem.attributes['stroke-dasharray'] = elem.attributes[
-            'stroke-dasharray'
+        if (elem.attributes["stroke-dasharray"] != null) {
+          elem.attributes["stroke-dasharray"] = elem.attributes[
+            "stroke-dasharray"
           ]
             .trim()
             .replace(regNumericValues, (num) => removeLeadingZero(num * scale));
@@ -120,8 +120,7 @@ const applyTransforms = (elem, pathData, params) => {
   delete elem.attributes.transform;
 
   return;
-};
-exports.applyTransforms = applyTransforms;
+}
 
 const transformAbsolutePoint = (matrix, x, y) => {
   const newX = matrix[0] * x + matrix[2] * y + matrix[4];
@@ -142,7 +141,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
   for (const pathItem of pathData) {
     let { instruction: command, data: args } = pathItem;
     // moveto (x y)
-    if (command === 'M') {
+    if (command === "M") {
       cursor[0] = args[0];
       cursor[1] = args[1];
       start[0] = cursor[0];
@@ -151,7 +150,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
       args[0] = x;
       args[1] = y;
     }
-    if (command === 'm') {
+    if (command === "m") {
       cursor[0] += args[0];
       cursor[1] += args[1];
       start[0] = cursor[0];
@@ -163,35 +162,35 @@ const applyMatrixToPathData = (pathData, matrix) => {
 
     // horizontal lineto (x)
     // convert to lineto to handle two-dimentional transforms
-    if (command === 'H') {
-      command = 'L';
+    if (command === "H") {
+      command = "L";
       args = [args[0], cursor[1]];
     }
-    if (command === 'h') {
-      command = 'l';
+    if (command === "h") {
+      command = "l";
       args = [args[0], 0];
     }
 
     // vertical lineto (y)
     // convert to lineto to handle two-dimentional transforms
-    if (command === 'V') {
-      command = 'L';
+    if (command === "V") {
+      command = "L";
       args = [cursor[0], args[0]];
     }
-    if (command === 'v') {
-      command = 'l';
+    if (command === "v") {
+      command = "l";
       args = [0, args[0]];
     }
 
     // lineto (x y)
-    if (command === 'L') {
+    if (command === "L") {
       cursor[0] = args[0];
       cursor[1] = args[1];
       const [x, y] = transformAbsolutePoint(matrix, args[0], args[1]);
       args[0] = x;
       args[1] = y;
     }
-    if (command === 'l') {
+    if (command === "l") {
       cursor[0] += args[0];
       cursor[1] += args[1];
       const [x, y] = transformRelativePoint(matrix, args[0], args[1]);
@@ -200,7 +199,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
     }
 
     // curveto (x1 y1 x2 y2 x y)
-    if (command === 'C') {
+    if (command === "C") {
       cursor[0] = args[4];
       cursor[1] = args[5];
       const [x1, y1] = transformAbsolutePoint(matrix, args[0], args[1]);
@@ -213,7 +212,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
       args[4] = x;
       args[5] = y;
     }
-    if (command === 'c') {
+    if (command === "c") {
       cursor[0] += args[4];
       cursor[1] += args[5];
       const [x1, y1] = transformRelativePoint(matrix, args[0], args[1]);
@@ -228,7 +227,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
     }
 
     // smooth curveto (x2 y2 x y)
-    if (command === 'S') {
+    if (command === "S") {
       cursor[0] = args[2];
       cursor[1] = args[3];
       const [x2, y2] = transformAbsolutePoint(matrix, args[0], args[1]);
@@ -238,7 +237,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
       args[2] = x;
       args[3] = y;
     }
-    if (command === 's') {
+    if (command === "s") {
       cursor[0] += args[2];
       cursor[1] += args[3];
       const [x2, y2] = transformRelativePoint(matrix, args[0], args[1]);
@@ -250,7 +249,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
     }
 
     // quadratic Bézier curveto (x1 y1 x y)
-    if (command === 'Q') {
+    if (command === "Q") {
       cursor[0] = args[2];
       cursor[1] = args[3];
       const [x1, y1] = transformAbsolutePoint(matrix, args[0], args[1]);
@@ -260,7 +259,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
       args[2] = x;
       args[3] = y;
     }
-    if (command === 'q') {
+    if (command === "q") {
       cursor[0] += args[2];
       cursor[1] += args[3];
       const [x1, y1] = transformRelativePoint(matrix, args[0], args[1]);
@@ -272,14 +271,14 @@ const applyMatrixToPathData = (pathData, matrix) => {
     }
 
     // smooth quadratic Bézier curveto (x y)
-    if (command === 'T') {
+    if (command === "T") {
       cursor[0] = args[0];
       cursor[1] = args[1];
       const [x, y] = transformAbsolutePoint(matrix, args[0], args[1]);
       args[0] = x;
       args[1] = y;
     }
-    if (command === 't') {
+    if (command === "t") {
       cursor[0] += args[0];
       cursor[1] += args[1];
       const [x, y] = transformRelativePoint(matrix, args[0], args[1]);
@@ -288,7 +287,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
     }
 
     // elliptical arc (rx ry x-axis-rotation large-arc-flag sweep-flag x y)
-    if (command === 'A') {
+    if (command === "A") {
       transformArc(cursor, args, matrix);
       cursor[0] = args[5];
       cursor[1] = args[6];
@@ -304,7 +303,7 @@ const applyMatrixToPathData = (pathData, matrix) => {
       args[5] = x;
       args[6] = y;
     }
-    if (command === 'a') {
+    if (command === "a") {
       transformArc([0, 0], args, matrix);
       cursor[0] += args[5];
       cursor[1] += args[6];

@@ -1,17 +1,15 @@
-'use strict';
+import { closestByName, querySelector } from "../lib/xast.js";
+import { computeStyle } from "../lib/style.js";
+import { parsePathData } from "../lib/path.js";
 
-const { querySelector, closestByName } = require('../lib/xast.js');
-const { computeStyle } = require('../lib/style.js');
-const { parsePathData } = require('../lib/path.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "removes hidden elements (zero sized, with absent attributes)";
 
-exports.description =
-  'removes hidden elements (zero sized, with absent attributes)';
-
-exports.params = {
+export const params = {
   isHidden: true,
   displayNone: true,
   opacity0: true,
@@ -48,18 +46,18 @@ exports.params = {
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
-  if (item.type === 'element') {
+export function fn(item, params) {
+  if (item.type === "element") {
     // Removes hidden elements
     // https://www.w3schools.com/cssref/pr_class_visibility.asp
     const computedStyle = computeStyle(item);
     if (
       params.isHidden &&
       computedStyle.visibility &&
-      computedStyle.visibility.type === 'static' &&
-      computedStyle.visibility.value === 'hidden' &&
+      computedStyle.visibility.type === "static" &&
+      computedStyle.visibility.value === "hidden" &&
       // keep if any descendant enables visibility
-      querySelector(item, '[visibility=visible]') == null
+      querySelector(item, "[visibility=visible]") == null
     ) {
       return false;
     }
@@ -72,10 +70,10 @@ exports.fn = function (item, params) {
     if (
       params.displayNone &&
       computedStyle.display &&
-      computedStyle.display.type === 'static' &&
-      computedStyle.display.value === 'none' &&
+      computedStyle.display.type === "static" &&
+      computedStyle.display.value === "none" &&
       // markers with display: none still rendered
-      item.isElem('marker') === false
+      item.isElem("marker") === false
     ) {
       return false;
     }
@@ -86,10 +84,10 @@ exports.fn = function (item, params) {
     if (
       params.opacity0 &&
       computedStyle.opacity &&
-      computedStyle.opacity.type === 'static' &&
-      computedStyle.opacity.value === '0' &&
+      computedStyle.opacity.type === "static" &&
+      computedStyle.opacity.value === "0" &&
       // transparent element inside clipPath still affect clipped elements
-      closestByName(item, 'clipPath') == null
+      closestByName(item, "clipPath") == null
     ) {
       return false;
     }
@@ -102,9 +100,9 @@ exports.fn = function (item, params) {
     // <circle r="0">
     if (
       params.circleR0 &&
-      item.isElem('circle') &&
+      item.isElem("circle") &&
       item.children.length === 0 &&
-      item.attributes.r === '0'
+      item.attributes.r === "0"
     ) {
       return false;
     }
@@ -117,9 +115,9 @@ exports.fn = function (item, params) {
     // <ellipse rx="0">
     if (
       params.ellipseRX0 &&
-      item.isElem('ellipse') &&
+      item.isElem("ellipse") &&
       item.children.length === 0 &&
-      item.attributes.rx === '0'
+      item.attributes.rx === "0"
     ) {
       return false;
     }
@@ -132,9 +130,9 @@ exports.fn = function (item, params) {
     // <ellipse ry="0">
     if (
       params.ellipseRY0 &&
-      item.isElem('ellipse') &&
+      item.isElem("ellipse") &&
       item.children.length === 0 &&
-      item.attributes.ry === '0'
+      item.attributes.ry === "0"
     ) {
       return false;
     }
@@ -147,9 +145,9 @@ exports.fn = function (item, params) {
     // <rect width="0">
     if (
       params.rectWidth0 &&
-      item.isElem('rect') &&
+      item.isElem("rect") &&
       item.children.length === 0 &&
-      item.attributes.width === '0'
+      item.attributes.width === "0"
     ) {
       return false;
     }
@@ -163,9 +161,9 @@ exports.fn = function (item, params) {
     if (
       params.rectHeight0 &&
       params.rectWidth0 &&
-      item.isElem('rect') &&
+      item.isElem("rect") &&
       item.children.length === 0 &&
-      item.attributes.height === '0'
+      item.attributes.height === "0"
     ) {
       return false;
     }
@@ -178,8 +176,8 @@ exports.fn = function (item, params) {
     // <pattern width="0">
     if (
       params.patternWidth0 &&
-      item.isElem('pattern') &&
-      item.attributes.width === '0'
+      item.isElem("pattern") &&
+      item.attributes.width === "0"
     ) {
       return false;
     }
@@ -192,8 +190,8 @@ exports.fn = function (item, params) {
     // <pattern height="0">
     if (
       params.patternHeight0 &&
-      item.isElem('pattern') &&
-      item.attributes.height === '0'
+      item.isElem("pattern") &&
+      item.attributes.height === "0"
     ) {
       return false;
     }
@@ -206,8 +204,8 @@ exports.fn = function (item, params) {
     // <image width="0">
     if (
       params.imageWidth0 &&
-      item.isElem('image') &&
-      item.attributes.width === '0'
+      item.isElem("image") &&
+      item.attributes.width === "0"
     ) {
       return false;
     }
@@ -220,8 +218,8 @@ exports.fn = function (item, params) {
     // <image height="0">
     if (
       params.imageHeight0 &&
-      item.isElem('image') &&
-      item.attributes.height === '0'
+      item.isElem("image") &&
+      item.attributes.height === "0"
     ) {
       return false;
     }
@@ -231,7 +229,7 @@ exports.fn = function (item, params) {
     // https://www.w3.org/TR/SVG11/paths.html#DAttribute
     //
     // <path d=""/>
-    if (params.pathEmptyD && item.isElem('path')) {
+    if (params.pathEmptyD && item.isElem("path")) {
       if (item.attributes.d == null) {
         return false;
       }
@@ -242,8 +240,8 @@ exports.fn = function (item, params) {
       // keep single point paths for markers
       if (
         pathData.length === 1 &&
-        computedStyle['marker-start'] == null &&
-        computedStyle['marker-end'] == null
+        computedStyle["marker-start"] == null &&
+        computedStyle["marker-end"] == null
       ) {
         return false;
       }
@@ -257,7 +255,7 @@ exports.fn = function (item, params) {
     // <polyline points="">
     if (
       params.polylineEmptyPoints &&
-      item.isElem('polyline') &&
+      item.isElem("polyline") &&
       item.attributes.points == null
     ) {
       return false;
@@ -270,10 +268,10 @@ exports.fn = function (item, params) {
     // <polygon points="">
     if (
       params.polygonEmptyPoints &&
-      item.isElem('polygon') &&
+      item.isElem("polygon") &&
       item.attributes.points == null
     ) {
       return false;
     }
   }
-};
+}

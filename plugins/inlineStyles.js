@@ -1,21 +1,19 @@
-'use strict';
+import { csstree } from "../deps.js";
+import { closestByName, querySelectorAll } from "../lib/xast.js";
+import * as cssTools from "../lib/css-tools.js";
 
-const csstree = require('css-tree');
-const { querySelectorAll, closestByName } = require('../lib/xast.js');
-const cssTools = require('../lib/css-tools');
+export const type = "full";
 
-exports.type = 'full';
+export const active = true;
 
-exports.active = true;
-
-exports.params = {
+export const params = {
   onlyMatchedOnce: true,
   removeMatchedSelectors: true,
-  useMqs: ['', 'screen'],
-  usePseudos: [''],
+  useMqs: ["", "screen"],
+  usePseudos: [""],
 };
 
-exports.description = 'inline styles (additional options)';
+export const description = "inline styles (additional options)";
 
 /**
  * Moves + merges styles from style elements to element styles
@@ -41,9 +39,9 @@ exports.description = 'inline styles (additional options)';
  *
  * @author strarsis <strarsis@gmail.com>
  */
-exports.fn = function (root, opts) {
+export function fn(root, opts) {
   // collect <style/>s
-  var styleEls = querySelectorAll(root, 'style');
+  var styleEls = querySelectorAll(root, "style");
 
   //no <styles/>s, nothing to do
   if (styleEls.length === 0) {
@@ -57,15 +55,15 @@ exports.fn = function (root, opts) {
     // values other than the empty string or text/css are not used
     if (
       styleEl.attributes.type != null &&
-      styleEl.attributes.type !== '' &&
-      styleEl.attributes.type !== 'text/css'
+      styleEl.attributes.type !== "" &&
+      styleEl.attributes.type !== "text/css"
     ) {
       continue;
     }
     // skip empty <style/>s or <foreignObject> content.
     if (
       styleEl.children.length === 0 ||
-      closestByName(styleEl, 'foreignObject')
+      closestByName(styleEl, "foreignObject")
     ) {
       continue;
     }
@@ -149,14 +147,14 @@ exports.fn = function (root, opts) {
 
       // merge declarations
       csstree.walk(selector.rule, {
-        visit: 'Declaration',
+        visit: "Declaration",
         enter: function (styleCsstreeDeclaration) {
           // existing inline styles have higher priority
           // no inline styles, external styles,                                    external styles used
           // inline styles,    external styles same   priority as inline styles,   inline   styles used
           // inline styles,    external styles higher priority than inline styles, external styles used
           var styleDeclaration = cssTools.csstreeToStyleDeclaration(
-            styleCsstreeDeclaration
+            styleCsstreeDeclaration,
           );
           if (
             selectedEl.style.getPropertyValue(styleDeclaration.name) !== null &&
@@ -168,7 +166,7 @@ exports.fn = function (root, opts) {
           selectedEl.style.setProperty(
             styleDeclaration.name,
             styleDeclaration.value,
-            styleDeclaration.priority
+            styleDeclaration.priority,
           );
         },
       });
@@ -206,16 +204,16 @@ exports.fn = function (root, opts) {
     for (selectedEl of selector.selectedEls) {
       // class
       var firstSubSelector = selector.item.data.children.first();
-      if (firstSubSelector.type === 'ClassSelector') {
+      if (firstSubSelector.type === "ClassSelector") {
         selectedEl.class.remove(firstSubSelector.name);
       }
       // clean up now empty class attributes
-      if (typeof selectedEl.class.item(0) === 'undefined') {
+      if (typeof selectedEl.class.item(0) === "undefined") {
         delete selectedEl.attributes.class;
       }
 
       // ID
-      if (firstSubSelector.type === 'IdSelector') {
+      if (firstSubSelector.type === "IdSelector") {
         if (selectedEl.attributes.id === firstSubSelector.name) {
           delete selectedEl.attributes.id;
         }
@@ -226,11 +224,11 @@ exports.fn = function (root, opts) {
   // clean up now empty elements
   for (var style of styles) {
     csstree.walk(style.cssAst, {
-      visit: 'Rule',
+      visit: "Rule",
       enter: function (node, item, list) {
         // clean up <style/> atrules without any rulesets left
         if (
-          node.type === 'Atrule' &&
+          node.type === "Atrule" &&
           // only Atrules containing rulesets
           node.block !== null &&
           node.block.children.isEmpty()
@@ -240,7 +238,7 @@ exports.fn = function (root, opts) {
         }
 
         // clean up <style/> rulesets without any css selectors left
-        if (node.type === 'Rule' && node.prelude.children.isEmpty()) {
+        if (node.type === "Rule" && node.prelude.children.isEmpty()) {
           list.remove(item);
         }
       },
@@ -251,18 +249,18 @@ exports.fn = function (root, opts) {
       var styleParentEl = style.styleEl.parentNode;
       styleParentEl.spliceContent(
         styleParentEl.children.indexOf(style.styleEl),
-        1
+        1,
       );
 
       if (
-        styleParentEl.name === 'defs' &&
+        styleParentEl.name === "defs" &&
         styleParentEl.children.length === 0
       ) {
         // also clean up now empty <def/>s
         var defsParentEl = styleParentEl.parentNode;
         defsParentEl.spliceContent(
           defsParentEl.children.indexOf(styleParentEl),
-          1
+          1,
         );
       }
 
@@ -274,4 +272,4 @@ exports.fn = function (root, opts) {
   }
 
   return root;
-};
+}

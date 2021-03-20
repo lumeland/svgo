@@ -1,13 +1,11 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "cleanups attributes from newlines, trailing and repeating spaces";
 
-exports.description =
-  'cleanups attributes from newlines, trailing and repeating spaces';
-
-exports.params = {
+export const params = {
   newlines: true,
   trim: true,
   spaces: true,
@@ -26,18 +24,18 @@ var regNewlinesNeedSpace = /(\S)\r?\n(\S)/g,
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
-  if (item.type === 'element') {
+export function fn(item, params) {
+  if (item.type === "element") {
     for (const name of Object.keys(item.attributes)) {
       if (params.newlines) {
         // new line which requires a space instead of themselve
         item.attributes[name] = item.attributes[name].replace(
           regNewlinesNeedSpace,
-          (match, p1, p2) => p1 + ' ' + p2
+          (match, p1, p2) => p1 + " " + p2,
         );
 
         // simple new line
-        item.attributes[name] = item.attributes[name].replace(regNewlines, '');
+        item.attributes[name] = item.attributes[name].replace(regNewlines, "");
       }
 
       if (params.trim) {
@@ -45,8 +43,8 @@ exports.fn = function (item, params) {
       }
 
       if (params.spaces) {
-        item.attributes[name] = item.attributes[name].replace(regSpaces, ' ');
+        item.attributes[name] = item.attributes[name].replace(regSpaces, " ");
       }
     }
   }
-};
+}

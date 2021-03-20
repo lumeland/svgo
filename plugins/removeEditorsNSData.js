@@ -1,17 +1,16 @@
-'use strict';
+import { parseName } from "../lib/svgo/tools.js";
+import { editorNamespaces } from "./_collections.js";
 
-const { parseName } = require('../lib/svgo/tools.js');
-const { editorNamespaces } = require('./_collections');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
-
-exports.description = 'removes editors namespaces, elements and attributes';
+export const description =
+  "removes editors namespaces, elements and attributes";
 
 const prefixes = [];
 
-exports.params = {
+export const params = {
   additionalNamespaces: [],
 };
 
@@ -29,17 +28,17 @@ exports.params = {
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
+export function fn(item, params) {
   let namespaces = editorNamespaces;
   if (Array.isArray(params.additionalNamespaces)) {
     namespaces = [...editorNamespaces, ...params.additionalNamespaces];
   }
 
-  if (item.type === 'element') {
-    if (item.isElem('svg')) {
+  if (item.type === "element") {
+    if (item.isElem("svg")) {
       for (const [name, value] of Object.entries(item.attributes)) {
         const { prefix, local } = parseName(name);
-        if (prefix === 'xmlns' && namespaces.includes(value)) {
+        if (prefix === "xmlns" && namespaces.includes(value)) {
           prefixes.push(local);
 
           // <svg xmlns:sodipodi="">
@@ -62,4 +61,4 @@ exports.fn = function (item, params) {
       return false;
     }
   }
-};
+}

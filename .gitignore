@@ -1,7 +1,1 @@
-node_modules
-dist
-diffs
-coverage
-bin/svgo-profiling
 .DS_Store
-*.log

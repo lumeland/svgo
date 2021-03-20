@@ -1,11 +1,9 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
-
-exports.description =
-  'removes width and height in presence of viewBox (opposite to removeViewBox, disable it first)';
+export const description =
+  "removes width and height in presence of viewBox (opposite to removeViewBox, disable it first)";
 
 /**
  * Remove width/height attributes and add the viewBox attribute if it's missing
@@ -20,8 +18,8 @@ exports.description =
  *
  * @author Benny Schudel
  */
-exports.fn = function (item) {
-  if (item.type === 'element' && item.name === 'svg') {
+export function fn(item) {
+  if (item.type === "element" && item.name === "svg") {
     if (item.attributes.viewBox != null) {
       delete item.attributes.width;
       delete item.attributes.height;
@@ -38,4 +36,4 @@ exports.fn = function (item) {
       delete item.attributes.height;
     }
   }
-};
+}

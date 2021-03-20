@@ -1,12 +1,10 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description = "removes empty <text> elements";
 
-exports.description = 'removes empty <text> elements';
-
-exports.params = {
+export const params = {
   text: true,
   tspan: true,
   tref: true,
@@ -33,19 +31,19 @@ exports.params = {
  *
  * @author Kir Belevich
  */
-exports.fn = function (item, params) {
+export function fn(item, params) {
   // Remove empty text element
-  if (params.text && item.isElem('text') && item.children.length === 0) {
+  if (params.text && item.isElem("text") && item.children.length === 0) {
     return false;
   }
 
   // Remove empty tspan element
-  if (params.tspan && item.isElem('tspan') && item.children.length === 0) {
+  if (params.tspan && item.isElem("tspan") && item.children.length === 0) {
     return false;
   }
 
   // Remove tref with empty xlink:href attribute
-  if (params.tref && item.isElem('tref') && !item.hasAttrLocal('href')) {
+  if (params.tref && item.isElem("tref") && !item.hasAttrLocal("href")) {
     return false;
   }
-};
+}

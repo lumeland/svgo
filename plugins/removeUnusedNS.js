@@ -1,13 +1,11 @@
-'use strict';
+import { traverse } from "../lib/xast.js";
+import { parseName } from "../lib/svgo/tools.js";
 
-const { traverse } = require('../lib/xast.js');
-const { parseName } = require('../lib/svgo/tools.js');
+export const type = "full";
 
-exports.type = 'full';
+export const active = true;
 
-exports.active = true;
-
-exports.description = 'removes unused namespaces declaration';
+export const description = "removes unused namespaces declaration";
 
 /**
  * Remove unused namespaces declaration.
@@ -17,7 +15,7 @@ exports.description = 'removes unused namespaces declaration';
  *
  * @author Kir Belevich
  */
-exports.fn = function (root) {
+export function fn(root) {
   let svgElem;
   const xmlnsCollection = [];
 
@@ -36,12 +34,12 @@ exports.fn = function (root) {
   }
 
   traverse(root, (node) => {
-    if (node.type === 'element') {
-      if (node.name === 'svg') {
+    if (node.type === "element") {
+      if (node.name === "svg") {
         for (const name of Object.keys(node.attributes)) {
           const { prefix, local } = parseName(name);
           // collect namespaces
-          if (prefix === 'xmlns' && local) {
+          if (prefix === "xmlns" && local) {
             xmlnsCollection.push(local);
           }
         }
@@ -72,9 +70,9 @@ exports.fn = function (root) {
   // remove svg element ns-attributes if they are not used even once
   if (xmlnsCollection.length) {
     for (const name of xmlnsCollection) {
-      delete svgElem.attributes['xmlns:' + name];
+      delete svgElem.attributes["xmlns:" + name];
     }
   }
 
   return root;
-};
+}

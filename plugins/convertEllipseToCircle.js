@@ -1,10 +1,8 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
-
-exports.description = 'converts non-eccentric <ellipse>s to <circle>s';
+export const description = "converts non-eccentric <ellipse>s to <circle>s";
 
 /**
  * Converts non-eccentric <ellipse>s to <circle>s.
@@ -16,21 +14,21 @@ exports.description = 'converts non-eccentric <ellipse>s to <circle>s';
  *
  * @author Taylor Hunt
  */
-exports.fn = function (item) {
-  if (item.isElem('ellipse')) {
+export function fn(item) {
+  if (item.isElem("ellipse")) {
     const rx = item.attributes.rx || 0;
     const ry = item.attributes.ry || 0;
 
     if (
       rx === ry ||
-      rx === 'auto' ||
-      ry === 'auto' // SVG2
+      rx === "auto" ||
+      ry === "auto" // SVG2
     ) {
-      var radius = rx !== 'auto' ? rx : ry;
-      item.renameElem('circle');
+      var radius = rx !== "auto" ? rx : ry;
+      item.renameElem("circle");
       delete item.attributes.rx;
       delete item.attributes.ry;
       item.attributes.r = radius;
     }
   }
-};
+}

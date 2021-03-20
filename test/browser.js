@@ -1,7 +1,7 @@
-const fs = require('fs');
-const http = require('http');
-const assert = require('assert');
-const { chromium } = require('playwright');
+const fs = require("fs");
+const http = require("http");
+const assert = require("assert");
+const { chromium } = require("playwright");
 
 const fixture = `<svg xmlns="http://www.w3.org/2000/svg">
     <g attr1="val1">
@@ -34,13 +34,13 @@ globalThis.result = result.data;
 `;
 
 const server = http.createServer((req, res) => {
-  if (req.url === '/') {
-    res.setHeader('Content-Type', 'text/html');
+  if (req.url === "/") {
+    res.setHeader("Content-Type", "text/html");
     res.end(content);
   }
-  if (req.url === '/svgo.browser.js') {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.end(fs.readFileSync('./dist/svgo.browser.js'));
+  if (req.url === "/svgo.browser.js") {
+    res.setHeader("Content-Type", "application/javascript");
+    res.end(fs.readFileSync("./dist/svgo.browser.js"));
   }
   res.end();
 });
@@ -49,7 +49,7 @@ const runTest = async () => {
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.goto('http://localhost:5000');
+  await page.goto("http://localhost:5000");
   const actual = await page.evaluate(() => globalThis.result);
   assert.equal(actual, expected);
   await browser.close();
@@ -58,7 +58,7 @@ const runTest = async () => {
 server.listen(5000, async () => {
   try {
     await runTest();
-    console.info('Tested successfully');
+    console.info("Tested successfully");
     server.close();
   } catch (error) {
     server.close();

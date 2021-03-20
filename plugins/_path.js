@@ -1,6 +1,4 @@
-'use strict';
-
-const { parsePathData, stringifyPathData } = require('../lib/path.js');
+import { parsePathData, stringifyPathData } from "../lib/path.js";
 
 var prevCtrlPoint;
 
@@ -11,32 +9,31 @@ var prevCtrlPoint;
  * @param {Object} params plugin params
  * @return {Array} output array
  */
-exports.path2js = function (path) {
+export function path2js(path) {
   if (path.pathJS) return path.pathJS;
   const pathData = []; // JS representation of the path data
   const newPathData = parsePathData(path.attributes.d);
   for (const { command, args } of newPathData) {
-    if (command === 'Z' || command === 'z') {
-      pathData.push({ instruction: 'z' });
+    if (command === "Z" || command === "z") {
+      pathData.push({ instruction: "z" });
     } else {
       pathData.push({ instruction: command, data: args });
     }
   }
   // First moveto is actually absolute. Subsequent coordinates were separated above.
-  if (pathData.length && pathData[0].instruction == 'm') {
-    pathData[0].instruction = 'M';
+  if (pathData.length && pathData[0].instruction == "m") {
+    pathData[0].instruction = "M";
   }
   path.pathJS = pathData;
   return pathData;
-};
-
-/**
+} /**
  * Convert relative Path data to absolute.
  *
  * @param {Array} data input data
  * @return {Array} output data
  */
-var relative2absolute = (exports.relative2absolute = function (data) {
+
+export function relative2absolute(data) {
   var currentPoint = [0, 0],
     subpathPoint = [0, 0],
     i;
@@ -45,48 +42,44 @@ var relative2absolute = (exports.relative2absolute = function (data) {
     var instruction = item.instruction,
       itemData = item.data && item.data.slice();
 
-    if (instruction == 'M') {
+    if (instruction == "M") {
       set(currentPoint, itemData);
       set(subpathPoint, itemData);
-    } else if ('mlcsqt'.indexOf(instruction) > -1) {
+    } else if ("mlcsqt".indexOf(instruction) > -1) {
       for (i = 0; i < itemData.length; i++) {
         itemData[i] += currentPoint[i % 2];
       }
       set(currentPoint, itemData);
 
-      if (instruction == 'm') {
+      if (instruction == "m") {
         set(subpathPoint, itemData);
       }
-    } else if (instruction == 'a') {
+    } else if (instruction == "a") {
       itemData[5] += currentPoint[0];
       itemData[6] += currentPoint[1];
       set(currentPoint, itemData);
-    } else if (instruction == 'h') {
+    } else if (instruction == "h") {
       itemData[0] += currentPoint[0];
       currentPoint[0] = itemData[0];
-    } else if (instruction == 'v') {
+    } else if (instruction == "v") {
       itemData[0] += currentPoint[1];
       currentPoint[1] = itemData[0];
-    } else if ('MZLCSQTA'.indexOf(instruction) > -1) {
+    } else if ("MZLCSQTA".indexOf(instruction) > -1) {
       set(currentPoint, itemData);
-    } else if (instruction == 'H') {
+    } else if (instruction == "H") {
       currentPoint[0] = itemData[0];
-    } else if (instruction == 'V') {
+    } else if (instruction == "V") {
       currentPoint[1] = itemData[0];
-    } else if (instruction == 'z') {
+    } else if (instruction == "z") {
       set(currentPoint, subpathPoint);
     }
 
-    return instruction == 'z'
-      ? { instruction: 'z' }
-      : {
-          instruction: instruction.toUpperCase(),
-          data: itemData,
-        };
+    return instruction == "z" ? { instruction: "z" } : {
+      instruction: instruction.toUpperCase(),
+      data: itemData,
+    };
   });
-});
-
-/**
+} /**
  * Compute Cubic Bézie bounding box.
  *
  * @see https://pomax.github.io/bezierinfo/
@@ -102,7 +95,8 @@ var relative2absolute = (exports.relative2absolute = function (data) {
  *
  * @return {Object}
  */
-exports.computeCubicBoundingBox = function (xa, ya, xb, yb, xc, yc, xd, yd) {
+
+export function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
   var minx = Number.POSITIVE_INFINITY,
     miny = Number.POSITIVE_INFINITY,
     maxx = Number.NEGATIVE_INFINITY,
@@ -183,9 +177,8 @@ exports.computeCubicBoundingBox = function (xa, ya, xb, yb, xc, yc, xd, yd) {
     maxx: maxx,
     maxy: maxy,
   };
-};
+} // compute the value for the cubic bezier function at time=t
 
-// compute the value for the cubic bezier function at time=t
 function computeCubicBaseValue(t, a, b, c, d) {
   var mt = 1 - t;
 
@@ -223,7 +216,7 @@ function computeCubicFirstDerivativeRoots(a, b, c, d) {
  *
  * @return {Object}
  */
-exports.computeQuadraticBoundingBox = function (xa, ya, xb, yb, xc, yc) {
+export function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
   var minx = Number.POSITIVE_INFINITY,
     miny = Number.POSITIVE_INFINITY,
     maxx = Number.NEGATIVE_INFINITY,
@@ -294,9 +287,8 @@ exports.computeQuadraticBoundingBox = function (xa, ya, xb, yb, xc, yc) {
     maxx: maxx,
     maxy: maxy,
   };
-};
+} // compute the value for the quadratic bezier function at time=t
 
-// compute the value for the quadratic bezier function at time=t
 function computeQuadraticBaseValue(t, a, b, c) {
   var mt = 1 - t;
 
@@ -322,7 +314,7 @@ function computeQuadraticFirstDerivativeRoot(a, b, c) {
  * @param {Object} params plugin params
  * @return {String} output path string
  */
-exports.js2path = function (path, data, params) {
+export function js2path(path, data, params) {
   path.pathJS = data;
 
   const pathData = [];
@@ -330,10 +322,10 @@ exports.js2path = function (path, data, params) {
     // remove moveto commands which are followed by moveto commands
     if (
       pathData.length !== 0 &&
-      (item.instruction === 'M' || item.instruction === 'm')
+      (item.instruction === "M" || item.instruction === "m")
     ) {
       const last = pathData[pathData.length - 1];
-      if (last.command === 'M' || last.command === 'm') {
+      if (last.command === "M" || last.command === "m") {
         pathData.pop();
       }
     }
@@ -348,7 +340,7 @@ exports.js2path = function (path, data, params) {
     precision: params.floatPrecision,
     disableSpaceAfterFlags: params.noSpaceAfterFlags,
   });
-};
+}
 
 function set(dest, source) {
   dest[0] = source[source.length - 2];
@@ -365,7 +357,7 @@ function set(dest, source) {
  * @param {Array} path2 JS path representation
  * @return {Boolean}
  */
-exports.intersects = function (path1, path2) {
+export function intersects(path1, path2) {
   // Collect points of every subpath.
   var points1 = relative2absolute(path1).reduce(gatherPoints, []),
     points2 = relative2absolute(path2).reduce(gatherPoints, []);
@@ -386,8 +378,9 @@ exports.intersects = function (path1, path2) {
         );
       });
     })
-  )
+  ) {
     return false;
+  }
 
   // Get a convex hull from points of each subpath. Has the most complexity O(n·log n).
   var hullNest1 = points1.map(convexHull),
@@ -409,7 +402,7 @@ exports.intersects = function (path1, path2) {
         // eslint-disable-next-line no-constant-condition
         if (iterations-- == 0) {
           console.error(
-            'Error: infinite loop while processing mergePaths plugin.'
+            "Error: infinite loop while processing mergePaths plugin.",
           );
           return true; // true is the safe value that means “do nothing with paths”
         }
@@ -431,14 +424,11 @@ exports.intersects = function (path1, path2) {
   // Thanks to knowledge of min/max x and y coordinates we can choose a quadrant to search in.
   // Since we're working on convex hull, the dot product is increasing until we find the farthest point.
   function supportPoint(polygon, direction) {
-    var index =
-        direction[1] >= 0
-          ? direction[0] < 0
-            ? polygon.maxY
-            : polygon.maxX
-          : direction[0] < 0
-          ? polygon.minX
-          : polygon.minY,
+    var index = direction[1] >= 0
+        ? direction[0] < 0 ? polygon.maxY : polygon.maxX
+        : direction[0] < 0
+        ? polygon.minX
+        : polygon.minY,
       max = -Infinity,
       value;
     while ((value = dot(polygon[index], direction)) > max) {
@@ -447,7 +437,7 @@ exports.intersects = function (path1, path2) {
     }
     return polygon[(index || polygon.length) - 1];
   }
-};
+}
 
 function processSimplex(simplex, direction) {
   // we only need to handle to 1-simplex and 2-simplex
@@ -528,21 +518,21 @@ function gatherPoints(points, item, index, path) {
     ctrlPoint = basePoint;
 
   switch (item.instruction) {
-    case 'M':
+    case "M":
       points.push((subPath = []));
       break;
-    case 'H':
+    case "H":
       addPoint(subPath, [data[0], basePoint[1]]);
       break;
-    case 'V':
+    case "V":
       addPoint(subPath, [basePoint[0], data[0]]);
       break;
-    case 'Q':
+    case "Q":
       addPoint(subPath, data.slice(0, 2));
       prevCtrlPoint = [data[2] - data[0], data[3] - data[1]]; // Save control point for shorthand
       break;
-    case 'T':
-      if (prev.instruction == 'Q' || prev.instruction == 'T') {
+    case "T":
+      if (prev.instruction == "Q" || prev.instruction == "T") {
         ctrlPoint = [
           basePoint[0] + prevCtrlPoint[0],
           basePoint[1] + prevCtrlPoint[1],
@@ -551,7 +541,7 @@ function gatherPoints(points, item, index, path) {
         prevCtrlPoint = [data[0] - ctrlPoint[0], data[1] - ctrlPoint[1]];
       }
       break;
-    case 'C':
+    case "C":
       // Approximate quibic Bezier curve with middle points between control points
       addPoint(subPath, [
         0.5 * (basePoint[0] + data[0]),
@@ -561,8 +551,8 @@ function gatherPoints(points, item, index, path) {
       addPoint(subPath, [0.5 * (data[2] + data[4]), 0.5 * (data[3] + data[5])]);
       prevCtrlPoint = [data[4] - data[2], data[5] - data[3]]; // Save control point for shorthand
       break;
-    case 'S':
-      if (prev.instruction == 'C' || prev.instruction == 'S') {
+    case "S":
+      if (prev.instruction == "C" || prev.instruction == "S") {
         addPoint(subPath, [
           basePoint[0] + 0.5 * prevCtrlPoint[0],
           basePoint[1] + 0.5 * prevCtrlPoint[1],
@@ -579,10 +569,10 @@ function gatherPoints(points, item, index, path) {
       addPoint(subPath, [0.5 * (data[0] + data[2]), 0.5 * (data[1] + data[3])]);
       prevCtrlPoint = [data[2] - data[0], data[3] - data[1]];
       break;
-    case 'A':
+    case "A":
       // Convert the arc to bezier curves and use the same approximation
       var curves = a2c.apply(0, basePoint.concat(data));
-      for (var cData; (cData = curves.splice(0, 6).map(toAbsolute)).length; ) {
+      for (var cData; (cData = curves.splice(0, 6).map(toAbsolute)).length;) {
         addPoint(subPath, [
           0.5 * (basePoint[0] + cData[0]),
           0.5 * (basePoint[1] + cData[1]),
@@ -660,7 +650,7 @@ function convexHull(points) {
   var upper = [],
     maxY = points.length - 1,
     top = 0;
-  for (let i = points.length; i--; ) {
+  for (let i = points.length; i--;) {
     while (
       upper.length >= 2 &&
       cross(upper[upper.length - 2], upper[upper.length - 1], points[i]) <= 0
@@ -706,7 +696,7 @@ function a2c(
   sweep_flag,
   x2,
   y2,
-  recursive
+  recursive,
 ) {
   // for more information of where this Math came from visit:
   // https://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
@@ -734,13 +724,12 @@ function a2c(
     }
     var rx2 = rx * rx,
       ry2 = ry * ry,
-      k =
-        (large_arc_flag == sweep_flag ? -1 : 1) *
+      k = (large_arc_flag == sweep_flag ? -1 : 1) *
         Math.sqrt(
           Math.abs(
             (rx2 * ry2 - rx2 * y * y - ry2 * x * x) /
-              (rx2 * y * y + ry2 * x * x)
-          )
+              (rx2 * y * y + ry2 * x * x),
+          ),
         ),
       cx = (k * rx * y) / ry + (x1 + x2) / 2,
       cy = (k * -ry * x) / rx + (y1 + y2) / 2,
@@ -800,10 +789,9 @@ function a2c(
     res = m.concat(res);
     var newres = [];
     for (var i = 0, n = res.length; i < n; i++) {
-      newres[i] =
-        i % 2
-          ? rotateY(res[i - 1], res[i], rad)
-          : rotateX(res[i], res[i + 1], rad);
+      newres[i] = i % 2
+        ? rotateY(res[i - 1], res[i], rad)
+        : rotateX(res[i], res[i + 1], rad);
     }
     return newres;
   }

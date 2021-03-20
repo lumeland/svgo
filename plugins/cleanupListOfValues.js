@@ -1,21 +1,20 @@
-'use strict';
+import { removeLeadingZero } from "../lib/svgo/tools.js";
 
-const { removeLeadingZero } = require('../lib/svgo/tools.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
+export const description = "rounds list of values to the fixed precision";
 
-exports.description = 'rounds list of values to the fixed precision';
-
-exports.params = {
+export const params = {
   floatPrecision: 3,
   leadingZero: true,
   defaultPx: true,
   convertToPx: true,
 };
 
-const regNumericValues = /^([-+]?\d*\.?\d+([eE][-+]?\d+)?)(px|pt|pc|mm|cm|m|in|ft|em|ex|%)?$/;
+const regNumericValues =
+  /^([-+]?\d*\.?\d+([eE][-+]?\d+)?)(px|pt|pc|mm|cm|m|in|ft|em|ex|%)?$/;
 const regSeparator = /\s+,?\s*|,\s*/;
 const absoluteLengths = {
   // relative to px
@@ -46,8 +45,8 @@ const absoluteLengths = {
  *
  * @author kiyopikko
  */
-exports.fn = function (item, params) {
-  if (item.type !== 'element') {
+export function fn(item, params) {
+  if (item.type !== "element") {
     return;
   }
 
@@ -55,9 +54,9 @@ exports.fn = function (item, params) {
     item.attributes.points = roundValues(item.attributes.points);
   }
 
-  if (item.attributes['enable-background'] != null) {
-    item.attributes['enable-background'] = roundValues(
-      item.attributes['enable-background']
+  if (item.attributes["enable-background"] != null) {
+    item.attributes["enable-background"] = roundValues(
+      item.attributes["enable-background"],
     );
   }
 
@@ -65,9 +64,9 @@ exports.fn = function (item, params) {
     item.attributes.viewBox = roundValues(item.attributes.viewBox);
   }
 
-  if (item.attributes['stroke-dasharray'] != null) {
-    item.attributes['stroke-dasharray'] = roundValues(
-      item.attributes['stroke-dasharray']
+  if (item.attributes["stroke-dasharray"] != null) {
+    item.attributes["stroke-dasharray"] = roundValues(
+      item.attributes["stroke-dasharray"],
     );
   }
 
@@ -103,16 +102,17 @@ exports.fn = function (item, params) {
       if (match) {
         // round it to the fixed precision
         (num = +(+match[1]).toFixed(params.floatPrecision)),
-          (units = match[3] || '');
+          (units = match[3] || "");
 
         // convert absolute values to pixels
         if (params.convertToPx && units && units in absoluteLengths) {
           var pxNum = +(absoluteLengths[units] * match[1]).toFixed(
-            params.floatPrecision
+            params.floatPrecision,
           );
 
-          if (String(pxNum).length < match[0].length)
-            (num = pxNum), (units = 'px');
+          if (String(pxNum).length < match[0].length) {
+            (num = pxNum), (units = "px");
+          }
         }
 
         // and remove leading zero
@@ -121,20 +121,19 @@ exports.fn = function (item, params) {
         }
 
         // remove default 'px' units
-        if (params.defaultPx && units === 'px') {
-          units = '';
+        if (params.defaultPx && units === "px") {
+          units = "";
         }
 
         roundedList.push(num + units);
-      }
-      // if attribute value is "new"(only enable-background).
+      } // if attribute value is "new"(only enable-background).
       else if (matchNew) {
-        roundedList.push('new');
+        roundedList.push("new");
       } else if (elem) {
         roundedList.push(elem);
       }
     }
 
-    return roundedList.join(' ');
+    return roundedList.join(" ");
   }
-};
+}

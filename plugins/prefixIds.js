@@ -1,21 +1,20 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
-
-exports.params = {
-  delim: '__',
+export const params = {
+  delim: "__",
   prefixIds: true,
   prefixClassNames: true,
 };
 
-exports.description = 'prefix IDs';
+export const description = "prefix IDs";
 
-var csstree = require('css-tree'),
-  collections = require('./_collections.js'),
-  referencesProps = collections.referencesProps,
-  rxId = /^#(.*)$/, // regular expression for matching an ID + extracing its name
+import { csstree } from "../deps.js";
+
+import { referencesProps } from "./_collections.js";
+
+var rxId = /^#(.*)$/, // regular expression for matching an ID + extracing its name
   addPrefix = null;
 
 const unquote = (string) => {
@@ -30,7 +29,7 @@ const unquote = (string) => {
 
 // Escapes a string for being used as ID
 var escapeIdentifierName = function (str) {
-  return str.replace(/[. ]/g, '_');
+  return str.replace(/[. ]/g, "_");
 };
 
 // Matches an #ID value, captures the ID name
@@ -57,7 +56,7 @@ var prefixId = function (val) {
   if (!idName) {
     return false;
   }
-  return '#' + addPrefix(idName);
+  return "#" + addPrefix(idName);
 };
 
 // prefixes a class attribute value
@@ -72,7 +71,7 @@ const addPrefixToClassAttr = (element, name) => {
   element.attributes[name] = element.attributes[name]
     .split(/\s+/)
     .map(addPrefix)
-    .join(' ');
+    .join(" ");
 };
 
 // prefixes an ID attribute value
@@ -123,7 +122,7 @@ const addPrefixToUrlAttr = (element, name) => {
     return;
   }
 
-  element.attributes[name] = 'url(' + idPrefixed + ')';
+  element.attributes[name] = "url(" + idPrefixed + ")";
 };
 
 // prefixes begin/end attribute value
@@ -135,11 +134,11 @@ const addPrefixToBeginEndAttr = (element, name) => {
     return;
   }
 
-  const parts = element.attributes[name].split('; ').map((val) => {
+  const parts = element.attributes[name].split("; ").map((val) => {
     val = val.trim();
 
-    if (val.endsWith('.end') || val.endsWith('.start')) {
-      const [id, postfix] = val.split('.');
+    if (val.endsWith(".end") || val.endsWith(".start")) {
+      const [id, postfix] = val.split(".");
 
       let idPrefixed = prefixId(`#${id}`);
 
@@ -154,7 +153,7 @@ const addPrefixToBeginEndAttr = (element, name) => {
     }
   });
 
-  element.attributes[name] = parts.join('; ');
+  element.attributes[name] = parts.join("; ");
 };
 
 const getBasename = (path) => {
@@ -163,7 +162,7 @@ const getBasename = (path) => {
   if (matched) {
     return matched[1];
   }
-  return '';
+  return "";
 };
 
 /**
@@ -175,16 +174,16 @@ const getBasename = (path) => {
  *
  * @author strarsis <strarsis@gmail.com>
  */
-exports.fn = function (node, opts, extra) {
+export function fn(node, opts, extra) {
   // skip subsequent passes when multipass is used
   if (extra.multipassCount && extra.multipassCount > 0) {
     return;
   }
 
   // prefix, from file name or option
-  var prefix = 'prefix';
+  var prefix = "prefix";
   if (opts.prefix) {
-    if (typeof opts.prefix === 'function') {
+    if (typeof opts.prefix === "function") {
       prefix = opts.prefix(node, extra);
     } else {
       prefix = opts.prefix;
@@ -206,14 +205,14 @@ exports.fn = function (node, opts, extra) {
 
   // <style/> property values
 
-  if (node.type === 'element' && node.name === 'style') {
+  if (node.type === "element" && node.name === "style") {
     if (node.children.length === 0) {
       // skip empty <style/>s
       return;
     }
 
-    var cssStr = '';
-    if (node.children[0].type === 'text' || node.children[0].type === 'cdata') {
+    var cssStr = "";
+    if (node.children[0].type === "text" || node.children[0].type === "cdata") {
       cssStr = node.children[0].value;
     }
 
@@ -225,18 +224,18 @@ exports.fn = function (node, opts, extra) {
       });
     } catch (parseError) {
       console.warn(
-        'Warning: Parse error of styles of <style/> element, skipped. Error details: ' +
-          parseError
+        "Warning: Parse error of styles of <style/> element, skipped. Error details: " +
+          parseError,
       );
       return;
     }
 
-    var idPrefixed = '';
+    var idPrefixed = "";
     csstree.walk(cssAst, function (node) {
       // #ID, .class
       if (
-        ((opts.prefixIds && node.type === 'IdSelector') ||
-          (opts.prefixClassNames && node.type === 'ClassSelector')) &&
+        ((opts.prefixIds && node.type === "IdSelector") ||
+          (opts.prefixClassNames && node.type === "ClassSelector")) &&
         node.name
       ) {
         node.name = addPrefix(node.name);
@@ -245,7 +244,7 @@ exports.fn = function (node, opts, extra) {
 
       // url(...) in value
       if (
-        node.type === 'Url' &&
+        node.type === "Url" &&
         node.value.value &&
         node.value.value.length > 0
       ) {
@@ -264,7 +263,7 @@ exports.fn = function (node, opts, extra) {
 
   // element attributes
 
-  if (node.type !== 'element') {
+  if (node.type !== "element") {
     return;
   }
 
@@ -272,27 +271,27 @@ exports.fn = function (node, opts, extra) {
 
   if (opts.prefixIds) {
     // ID
-    addPrefixToIdAttr(node, 'id');
+    addPrefixToIdAttr(node, "id");
   }
 
   if (opts.prefixClassNames) {
     // Class
-    addPrefixToClassAttr(node, 'class');
+    addPrefixToClassAttr(node, "class");
   }
 
   // References
 
   // href
-  addPrefixToHrefAttr(node, 'href');
+  addPrefixToHrefAttr(node, "href");
 
   // (xlink:)href (deprecated, must be still supported)
-  addPrefixToHrefAttr(node, 'xlink:href');
+  addPrefixToHrefAttr(node, "xlink:href");
 
   // (referenceable) properties
   for (var referencesProp of referencesProps) {
     addPrefixToUrlAttr(node, referencesProp);
   }
 
-  addPrefixToBeginEndAttr(node, 'begin');
-  addPrefixToBeginEndAttr(node, 'end');
-};
+  addPrefixToBeginEndAttr(node, "begin");
+  addPrefixToBeginEndAttr(node, "end");
+}

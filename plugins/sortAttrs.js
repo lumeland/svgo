@@ -1,32 +1,30 @@
-'use strict';
+import { parseName } from "../lib/svgo/tools.js";
 
-const { parseName } = require('../lib/svgo/tools.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
+export const description = "sorts element attributes (disabled by default)";
 
-exports.description = 'sorts element attributes (disabled by default)';
-
-exports.params = {
+export const params = {
   order: [
-    'id',
-    'width',
-    'height',
-    'x',
-    'x1',
-    'x2',
-    'y',
-    'y1',
-    'y2',
-    'cx',
-    'cy',
-    'r',
-    'fill',
-    'stroke',
-    'marker',
-    'd',
-    'points',
+    "id",
+    "width",
+    "height",
+    "x",
+    "x1",
+    "x2",
+    "y",
+    "y1",
+    "y2",
+    "cx",
+    "cy",
+    "r",
+    "fill",
+    "stroke",
+    "marker",
+    "d",
+    "points",
   ],
 };
 
@@ -38,11 +36,11 @@ exports.params = {
  *
  * @author Nikolay Frantsev
  */
-exports.fn = function (item, params) {
+export function fn(item, params) {
   const orderlen = params.order.length + 1;
-  const xmlnsOrder = params.xmlnsOrder || 'front';
+  const xmlnsOrder = params.xmlnsOrder || "front";
 
-  if (item.type === 'element') {
+  if (item.type === "element") {
     const attrs = Object.entries(item.attributes);
 
     attrs.sort(([aName], [bName]) => {
@@ -50,9 +48,9 @@ exports.fn = function (item, params) {
       const { prefix: bPrefix } = parseName(bName);
       if (aPrefix != bPrefix) {
         // xmlns attributes implicitly have the prefix xmlns
-        if (xmlnsOrder == 'front') {
-          if (aPrefix === 'xmlns') return -1;
-          if (bPrefix === 'xmlns') return 1;
+        if (xmlnsOrder == "front") {
+          if (aPrefix === "xmlns") return -1;
+          if (bPrefix === "xmlns") return 1;
         }
         return aPrefix < bPrefix ? -1 : 1;
       }
@@ -63,12 +61,12 @@ exports.fn = function (item, params) {
       for (let i = 0; i < params.order.length; i++) {
         if (aName == params.order[i]) {
           aindex = i;
-        } else if (aName.indexOf(params.order[i] + '-') === 0) {
+        } else if (aName.indexOf(params.order[i] + "-") === 0) {
           aindex = i + 0.5;
         }
         if (bName == params.order[i]) {
           bindex = i;
-        } else if (bName.indexOf(params.order[i] + '-') === 0) {
+        } else if (bName.indexOf(params.order[i] + "-") === 0) {
           bindex = i + 0.5;
         }
       }
@@ -85,4 +83,4 @@ exports.fn = function (item, params) {
     }
     item.attributes = sorted;
   }
-};
+}

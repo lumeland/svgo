@@ -1,14 +1,12 @@
-'use strict';
+import { closestByName } from "../lib/xast.js";
 
-const { closestByName } = require('../lib/xast.js');
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = true;
 
-exports.active = true;
+export const description = "removes viewBox attribute when possible";
 
-exports.description = 'removes viewBox attribute when possible';
-
-const viewBoxElems = ['svg', 'pattern', 'symbol'];
+const viewBoxElems = ["svg", "pattern", "symbol"];
 
 /**
  * Remove viewBox attr which coincides with a width/height box.
@@ -25,28 +23,28 @@ const viewBoxElems = ['svg', 'pattern', 'symbol'];
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
+export function fn(item) {
   if (
-    item.type === 'element' &&
+    item.type === "element" &&
     viewBoxElems.includes(item.name) &&
     item.attributes.viewBox != null &&
     item.attributes.width != null &&
     item.attributes.height != null
   ) {
     // TODO remove width/height for such case instead
-    if (item.name === 'svg' && closestByName(item.parentNode, 'svg')) {
+    if (item.name === "svg" && closestByName(item.parentNode, "svg")) {
       return;
     }
 
     const nums = item.attributes.viewBox.split(/[ ,]+/g);
 
     if (
-      nums[0] === '0' &&
-      nums[1] === '0' &&
-      item.attributes.width.replace(/px$/, '') === nums[2] && // could use parseFloat too
-      item.attributes.height.replace(/px$/, '') === nums[3]
+      nums[0] === "0" &&
+      nums[1] === "0" &&
+      item.attributes.width.replace(/px$/, "") === nums[2] && // could use parseFloat too
+      item.attributes.height.replace(/px$/, "") === nums[3]
     ) {
       delete item.attributes.viewBox;
     }
   }
-};
+}

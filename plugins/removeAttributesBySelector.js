@@ -1,11 +1,9 @@
-'use strict';
+export const type = "perItem";
 
-exports.type = 'perItem';
+export const active = false;
 
-exports.active = false;
-
-exports.description =
-  'removes attributes of elements that match a css selector';
+export const description =
+  "removes attributes of elements that match a css selector";
 
 /**
  * Removes attributes of elements that match a css selector.
@@ -57,7 +55,7 @@ exports.description =
  *
  * @author Bradley Mease
  */
-exports.fn = function (item, params) {
+export function fn(item, params) {
   var selectors = Array.isArray(params.selectors) ? params.selectors : [params];
 
   selectors.map(({ selector, attributes }) => {
@@ -71,4 +69,4 @@ exports.fn = function (item, params) {
       }
     }
   });
-};
+}

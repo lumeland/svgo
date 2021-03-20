@@ -1,13 +1,11 @@
-'use strict';
+export const type = "perItemReverse";
 
-exports.type = 'perItemReverse';
+export const active = true;
 
-exports.active = true;
+export const description =
+  "moves elements attributes to the existing group wrapper";
 
-exports.description = 'moves elements attributes to the existing group wrapper';
-
-var inheritableAttrs = require('./_collections').inheritableAttrs,
-  pathElems = require('./_collections.js').pathElems;
+import { inheritableAttrs, pathElems } from "./_collections.js";
 
 /**
  * Collapse content's intersected and inheritable
@@ -33,21 +31,21 @@ var inheritableAttrs = require('./_collections').inheritableAttrs,
  *
  * @author Kir Belevich
  */
-exports.fn = function (item) {
-  if (item.isElem('g') && item.children.length > 1) {
+export function fn(item) {
+  if (item.isElem("g") && item.children.length > 1) {
     var intersection = {},
       hasTransform = false,
-      hasClip = item.hasAttr('clip-path') || item.hasAttr('mask'),
+      hasClip = item.hasAttr("clip-path") || item.hasAttr("mask"),
       intersected = item.children.every(function (inner) {
-        if (inner.type === 'element' && inner.hasAttr()) {
+        if (inner.type === "element" && inner.hasAttr()) {
           // don't mess with possible styles (hack until CSS parsing is implemented)
-          if (inner.hasAttr('class')) return false;
+          if (inner.hasAttr("class")) return false;
           if (!Object.keys(intersection).length) {
             intersection = inner.attributes;
           } else {
             intersection = intersectInheritableAttrs(
               intersection,
-              inner.attributes
+              inner.attributes,
             );
 
             if (!intersection) return false;
@@ -63,14 +61,14 @@ exports.fn = function (item) {
     if (intersected) {
       item.children.forEach(function (g) {
         for (const [name, value] of Object.entries(intersection)) {
-          if ((!allPath && !hasClip) || name !== 'transform') {
+          if ((!allPath && !hasClip) || name !== "transform") {
             delete g.attributes[name];
 
-            if (name === 'transform') {
+            if (name === "transform") {
               if (!hasTransform) {
-                if (item.hasAttr('transform')) {
-                  item.attributes.transform =
-                    item.attributes.transform + ' ' + value;
+                if (item.hasAttr("transform")) {
+                  item.attributes.transform = item.attributes.transform + " " +
+                    value;
                 } else {
                   item.attributes.transform = value;
                 }
@@ -85,9 +83,7 @@ exports.fn = function (item) {
       });
     }
   }
-};
-
-/**
+} /**
  * Intersect inheritable attributes.
  *
  * @param {Object} a first attrs object
@@ -95,6 +91,7 @@ exports.fn = function (item) {
  *
  * @return {Object} intersected attrs object
  */
+
 function intersectInheritableAttrs(a, b) {
   var c = {};
 
