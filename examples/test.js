@@ -1,4 +1,4 @@
-import { optimize } from "../lib/svgo.js";
+import { optimize } from "../mod.js";
 const filepath = "examples/test.svg";
 const config = {
   plugins: [

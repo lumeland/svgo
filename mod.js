@@ -2,13 +2,13 @@ import {
   defaultPlugins,
   extendDefaultPlugins,
   resolvePluginConfig,
-} from "./svgo/config.js";
+} from "./lib/svgo/config.js";
 
-import svg2js from "./svgo/svg2js.js";
-import js2svg from "./svgo/js2svg.js";
-import invokePlugins from "./svgo/plugins.js";
-import JSAPI from "./svgo/jsAPI.js";
-import { encodeSVGDatauri } from "./svgo/tools.js";
+import svg2js from "./lib/svgo/svg2js.js";
+import js2svg from "./lib/svgo/js2svg.js";
+import invokePlugins from "./lib/svgo/plugins.js";
+import JSAPI from "./lib/svgo/jsAPI.js";
+import { encodeSVGDatauri } from "./lib/svgo/tools.js";
 
 export { extendDefaultPlugins };
 
