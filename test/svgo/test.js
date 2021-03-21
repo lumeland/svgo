@@ -1,7 +1,4 @@
-import {
-  assertEquals,
-  assertMatch,
-} from "https://deno.land/std@0.91.0/testing/asserts.ts";
+import { assertEquals, assertMatch } from "../../deps/asserts.js";
 import { EOL } from "../../deps.js";
 import { extendDefaultPlugins, optimize } from "../../mod.js";
 

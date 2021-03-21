@@ -1,4 +1,4 @@
-import { equal } from "https://deno.land/std@0.91.0/testing/asserts.ts";
+import { equal } from "../deps/asserts.js";
 import { computeStyle } from "../lib/style.js";
 import { querySelector } from "../lib/xast.js";
 import svg2js from "../lib/svgo/svg2js.js";

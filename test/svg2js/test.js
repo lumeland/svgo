@@ -1,8 +1,4 @@
-import {
-  assert,
-  assertEquals,
-  assertObjectMatch,
-} from "https://deno.land/std@0.91.0/testing/asserts.ts";
+import { assert, assertEquals, assertObjectMatch } from "../../deps/asserts.js";
 import SVG2JS from "../../lib/svgo/svg2js.js";
 import JSAPI from "../../lib/svgo/jsAPI.js";
 import CSSStyleDeclaration from "../../lib/svgo/css-style-declaration.js";

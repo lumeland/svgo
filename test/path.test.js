@@ -1,7 +1,4 @@
-import {
-  assertEquals,
-  equal,
-} from "https://deno.land/std@0.91.0/testing/asserts.ts";
+import { assertEquals, equal } from "../deps/asserts.js";
 import { parsePathData, stringifyPathData } from "../lib/path.js";
 
 Deno.test("should allow spaces between commands", () => {
