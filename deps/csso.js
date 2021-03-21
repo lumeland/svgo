@@ -9,8 +9,9 @@
   (function (exports) {
     "use strict";
 
-    var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis
-    : typeof window !== "undefined"
+    var commonjsGlobal = typeof globalThis !== "undefined"
+      ? globalThis
+      : typeof window !== "undefined"
       ? window
       : typeof global !== "undefined"
       ? global
@@ -101,7 +102,8 @@
               var i;
               void 0 === r && (r = this);
               for (
-                var a = t(this, null, this.head); null !== a.next;
+                var a = t(this, null, this.head);
+                null !== a.next;
               ) {
                 i = a.next, a.next = i.next, e.call(r, i.data, i, this);
               }
@@ -112,7 +114,8 @@
               var i;
               void 0 === r && (r = this);
               for (
-                var a = t(this, this.tail, null); null !== a.prev;
+                var a = t(this, this.tail, null);
+                null !== a.prev;
               ) {
                 i = a.prev, a.prev = i.prev, e.call(r, i.data, i, this);
               }
@@ -123,7 +126,8 @@
               var a;
               void 0 === i && (i = this);
               for (
-                var o = t(this, null, this.head), s = r; null !== o.next;
+                var o = t(this, null, this.head), s = r;
+                null !== o.next;
               ) {
                 a = o.next, o.next = a.next, s = e.call(i, s, a.data, a, this);
               }
@@ -133,7 +137,8 @@
               var a;
               void 0 === i && (i = this);
               for (
-                var o = t(this, this.tail, null), s = r; null !== o.prev;
+                var o = t(this, this.tail, null), s = r;
+                null !== o.prev;
               ) {
                 a = o.prev, o.prev = a.prev, s = e.call(i, s, a.data, a, this);
               }
@@ -174,7 +179,8 @@
             i.prototype.map = function (e, t) {
               var n = new i(), r = this.head;
               for (
-                void 0 === t && (t = this); null !== r;
+                void 0 === t && (t = this);
+                null !== r;
               ) {
                 n.appendData(e.call(t, r.data, r, this)), r = r.next;
               }
@@ -183,7 +189,8 @@
             i.prototype.filter = function (e, t) {
               var n = new i(), r = this.head;
               for (
-                void 0 === t && (t = this); null !== r;
+                void 0 === t && (t = this);
+                null !== r;
               ) {
                 e.call(t, r.data, r, this) && n.appendData(r.data), r = r.next;
               }
@@ -194,7 +201,8 @@
             },
             i.prototype.copy = function () {
               for (
-                var t = new i(), n = this.head; null !== n;
+                var t = new i(), n = this.head;
+                null !== n;
               ) {
                 t.insert(e(n.data)), n = n.next;
               }
@@ -597,11 +605,13 @@
             },
             lookupType: function (e) {
               return (e += this.tokenIndex) < this.tokenCount
-                ? this.offsetAndType[e] >> 24 : W;
+                ? this.offsetAndType[e] >> 24
+                : W;
             },
             lookupOffset: function (e) {
               return (e += this.tokenIndex) < this.tokenCount
-                ? 16777215 & this.offsetAndType[e - 1] : this.source.length;
+                ? 16777215 & this.offsetAndType[e - 1]
+                : this.source.length;
             },
             lookupValue: function (e, t) {
               return (e += this.tokenIndex) < this.tokenCount &&
@@ -613,7 +623,9 @@
                 );
             },
             getTokenStart: function (e) {
-              return e === this.tokenIndex ? this.tokenStart : e > 0
+              return e === this.tokenIndex
+                ? this.tokenStart
+                : e > 0
                 ? e < this.tokenCount
                   ? 16777215 & this.offsetAndType[e - 1]
                   : 16777215 & this.offsetAndType[this.tokenCount]
@@ -666,7 +678,7 @@
               t > 0 && this.skip(t);
             },
             skipSC: function () {
-              for (; this.tokenType === q || this.tokenType === Y;)this.next();
+              for (; this.tokenType === q || this.tokenType === Y;) this.next();
             },
             skip: function (e) {
               var t = this.tokenIndex + e;
@@ -693,7 +705,9 @@
             },
             forEachToken(e) {
               for (
-                var t = 0, n = this.firstCharOffset; t < this.tokenCount; t++
+                var t = 0, n = this.firstCharOffset;
+                t < this.tokenCount;
+                t++
               ) {
                 var r = n, i = this.offsetAndType[t], a = 16777215 & i;
                 n = a, e(i >> 24, r, a, t);
@@ -742,9 +756,7 @@
                     : 0 === a.min && 1 === a.max
                     ? "?"
                     : 1 === a.min && 0 === a.max
-                    ? a.comma
-                      ? "#"
-                      : "+"
+                    ? a.comma ? "#" : "+"
                     : 1 === a.min && 1 === a.max
                     ? ""
                     : (a.comma ? "#" : "") + (a.min === a.max
@@ -766,7 +778,8 @@
                     }(e.opts),
                     e.opts,
                   )
-                  : "") + ">";
+                  : "") +
+                  ">";
                 break;
               case "Property":
                 i = "<'" + e.name + "'>";
@@ -794,12 +807,10 @@
           }
           var G = function (e, t) {
             var n = V, r = !1, i = !1;
-            return "function" == typeof t
-              ? n = t
-              : t &&
-                (r = Boolean(t.forceBraces),
-                  i = Boolean(t.compact),
-                  "function" == typeof t.decorate && (n = t.decorate)),
+            return "function" == typeof t ? n = t : t &&
+              (r = Boolean(t.forceBraces),
+                i = Boolean(t.compact),
+                "function" == typeof t.decorate && (n = t.decorate)),
               K(e, n, r, i);
           };
           const Q = { offset: 0, line: 1, column: 1 };
@@ -936,7 +947,8 @@
             oe = "undefined" != typeof Uint32Array ? Uint32Array : Array,
             se = function (e, t) {
               return null === e || e.length < t
-                ? new oe(Math.max(t + 1024, 16384)) : e;
+                ? new oe(Math.max(t + 1024, 16384))
+                : e;
             },
             le = h.TYPE,
             ce = z.isNewline,
@@ -1015,8 +1027,9 @@
                   case 92:
                     if (h === e.length - 1) break;
                     var i = n(h + 1);
-                    ce(i) ? h += be(e, h + 1, i)
-                    : he(r, i) && (h = ke(e, h) - 1);
+                    ce(i)
+                      ? h += be(e, h + 1, i)
+                      : he(r, i) && (h = ke(e, h) - 1);
                 }
               }
             }
@@ -1043,7 +1056,8 @@
                   break;
                 case 35:
                   ue(n(h + 1)) || he(n(h + 1), n(h + 2))
-                    ? (f = le.Hash, h = ve(e, h + 1)) : (f = le.Delim, h++);
+                    ? (f = le.Hash, h = ve(e, h + 1))
+                    : (f = le.Delim, h++);
                   break;
                 case 39:
                   a();
@@ -1061,8 +1075,9 @@
                   f = le.Comma, h++;
                   break;
                 case 45:
-                  pe(g, n(h + 1), n(h + 2)) ? r()
-                  : 45 === n(h + 1) && 62 === n(h + 2)
+                  pe(g, n(h + 1), n(h + 2))
+                    ? r()
+                    : 45 === n(h + 1) && 62 === n(h + 2)
                     ? (f = le.CDC, h += 3)
                     : de(g, n(h + 1), n(h + 2))
                     ? i()
@@ -1085,7 +1100,8 @@
                   break;
                 case 60:
                   33 === n(h + 1) && 45 === n(h + 2) && 45 === n(h + 3)
-                    ? (f = le.CDO, h += 4) : (f = le.Delim, h++);
+                    ? (f = le.CDO, h += 4)
+                    : (f = le.Delim, h++);
                   break;
                 case 64:
                   de(n(h + 1), n(h + 2), n(h + 3))
@@ -1141,7 +1157,8 @@
               s[c++] = f << 24 | h;
             }
             for (
-              s[c] = le.EOF << 24 | h, l[c] = o, l[o] = o; 0 !== d;
+              s[c] = le.EOF << 24 | h, l[c] = o, l[o] = o;
+              0 !== d;
             ) {
               d = l[m = 16777215 & d], l[m] = o;
             }
@@ -1291,9 +1308,11 @@
           }
           function ct(e) {
             return function (t, n, r) {
-              return null === t ? 0
-              : t.type === et.Function && at(t.value, nt) ? lt(t, n)
-              : e(t, n, r);
+              return null === t
+                ? 0
+                : t.type === et.Function && at(t.value, nt)
+                ? lt(t, n)
+                : e(t, n, r);
             };
           }
           function ut(e) {
@@ -1321,7 +1340,9 @@
             }),
               function (t, n, r) {
                 return null !== t && t.type === et.Number &&
-                    0 === Number(t.value) ? 1 : e(t, n, r);
+                    0 === Number(t.value)
+                  ? 1
+                  : e(t, n, r);
               };
           }
           var dt,
@@ -1373,8 +1394,9 @@
                 return 1;
               },
               "id-selector": function (e) {
-                return null === e || e.type !== et.Hash ? 0
-                : Qe(rt(e.value, 1), rt(e.value, 2), rt(e.value, 3))
+                return null === e || e.type !== et.Hash
+                  ? 0
+                  : Qe(rt(e.value, 1), rt(e.value, 2), rt(e.value, 3))
                   ? 1
                   : 0;
               },
@@ -1388,8 +1410,9 @@
                     case 2:
                       return Me(t(++n), n, t);
                     case 3:
-                      return 45 !== e.value.charCodeAt(2) ? 0
-                      : (n = Ne(t(++n), n, t), Re(e = t(n), 0, !0, n));
+                      return 45 !== e.value.charCodeAt(2)
+                        ? 0
+                        : (n = Ne(t(++n), n, t), Re(e = t(n), 0, !0, n));
                     default:
                       return 45 !== e.value.charCodeAt(2) ? 0 : Re(e, 3, !0, n);
                   }
@@ -1404,24 +1427,26 @@
                     case 1:
                       return Me(t(++n), n, t);
                     case 2:
-                      return 45 !== e.value.charCodeAt(1) ? 0
-                      : (n = Ne(t(++n), n, t), Re(e = t(n), 0, !0, n));
+                      return 45 !== e.value.charCodeAt(1)
+                        ? 0
+                        : (n = Ne(t(++n), n, t), Re(e = t(n), 0, !0, n));
                     default:
                       return 45 !== e.value.charCodeAt(1) ? 0 : Re(e, 2, !0, n);
                   }
                 } else if (e.type === Be) {
                   for (
                     var r = e.value.charCodeAt(0),
-                      i = 43 === r || 45 === r
-                        ? 1
-                        : 0,
+                      i = 43 === r || 45 === r ? 1 : 0,
                       a = i;
                     a < e.value.length && ze(e.value.charCodeAt(a));
                     a++
                   );
-                  return a === i ? 0 : Ae(e.value, a, 110)
-                    ? a + 1 === e.value.length ? Me(t(++n), n, t)
-                    : 45 !== e.value.charCodeAt(a + 1)
+                  return a === i
+                    ? 0
+                    : Ae(e.value, a, 110)
+                    ? a + 1 === e.value.length
+                      ? Me(t(++n), n, t)
+                      : 45 !== e.value.charCodeAt(a + 1)
                       ? 0
                       : a + 2 === e.value.length
                       ? (n = Ne(t(++n), n, t), Re(e = t(n), 0, !0, n))
@@ -1437,7 +1462,9 @@
                 }
                 if (null === (e = t(++n))) return 0;
                 if (He(e, 43)) {
-                  return null === (e = t(++n)) ? 0 : e.type === We
+                  return null === (e = t(++n))
+                    ? 0
+                    : e.type === We
                     ? Ge(Ke(e, 0, !0), ++n, t)
                     : He(e, 63)
                     ? Ge(1, ++n, t)
@@ -1454,8 +1481,9 @@
                     ? Ve(e, 45) && Ke(e, 1, !1) ? n + 1 : 0
                     : Ge(r, n, t);
                 }
-                return e.type === Ue && Ve(e, 43) ? Ge(Ke(e, 1, !0), ++n, t)
-                : 0;
+                return e.type === Ue && Ve(e, 43)
+                  ? Ge(Ke(e, 1, !0), ++n, t)
+                  : 0;
               },
               "declaration-value": function (e, t) {
                 if (!e) return 0;
@@ -1539,7 +1567,9 @@
               percentage: ct(
                 (function (e, t, n) {
                   return null === e || e.type !== et.Percentage ||
-                      st(n, e.value, e.value.length - 1) ? 0 : 1;
+                      st(n, e.value, e.value.length - 1)
+                    ? 0
+                    : 1;
                 }),
               ),
               zero: pt(),
@@ -1548,18 +1578,18 @@
                   if (null === e) return 0;
                   var r = Je(e.value, 0);
                   return r === e.value.length || ot(e.value, r)
-                    ? st(n, e.value, r) ? 0 : 1 : 0;
+                    ? st(n, e.value, r) ? 0 : 1
+                    : 0;
                 }),
               ),
               integer: ct(
                 (function (e, t, n) {
                   if (null === e || e.type !== et.Number) return 0;
                   for (
-                    var r =
-                      43 === e.value.charCodeAt(0) ||
+                    var r = 43 === e.value.charCodeAt(0) ||
                         45 === e.value.charCodeAt(0)
-                        ? 1
-                        : 0;
+                      ? 1
+                      : 0;
                     r < e.value.length;
                     r++
                   ) {
@@ -1617,8 +1647,9 @@
               this.error("Expect `" + String.fromCharCode(e) + "`"), this.pos++;
             },
             peek: function () {
-              return this.pos < this.str.length ? this.str.charAt(this.pos++)
-              : "";
+              return this.pos < this.str.length
+                ? this.str.charAt(this.pos++)
+                : "";
             },
             error: function (e) {
               throw new gt(e, this.str, this.pos);
@@ -1673,7 +1704,8 @@
             return e.eat(123),
               t = wt(e),
               44 === e.charCode()
-                ? (e.pos++, 125 !== e.charCode() && (n = wt(e))) : n = t,
+                ? (e.pos++, 125 !== e.charCode() && (n = wt(e)))
+                : n = t,
               e.eat(125),
               { min: Number(t), max: n ? Number(n) : 0 };
           }
@@ -1733,10 +1765,11 @@
                     vt(e),
                     e.eat(44),
                     vt(e),
-                    8734 === e.charCode() ? e.peek()
-                    : (r = 1,
-                      45 === e.charCode() && (e.peek(), r = -1),
-                      n = r * Number(wt(e))),
+                    8734 === e.charCode()
+                      ? e.peek()
+                      : (r = 1,
+                        45 === e.charCode() && (e.peek(), r = -1),
+                        n = r * Number(wt(e))),
                     e.eat(93),
                     null === t && null === n ? null
                     : { type: "Range", min: t, max: n };
@@ -1857,7 +1890,8 @@
                 return { type: "Spaces", value: vt(e) };
               case 64:
                 return (t = e.nextCharCode()) < 128 && 1 === yt[t]
-                  ? (e.pos++, { type: "AtKeyword", name: xt(e) }) : At(e);
+                  ? (e.pos++, { type: "AtKeyword", name: xt(e) })
+                  : At(e);
               case 42:
               case 43:
               case 63:
@@ -1945,7 +1979,8 @@
             for (Ce(e, Rt); !Rt.eof;) {
               if (t) {
                 for (
-                  ; i < t.length && r + t[i].len <= Rt.tokenStart;
+                  ;
+                  i < t.length && r + t[i].len <= Rt.tokenStart;
                 ) {
                   r += t[i++].len, a = t[i].node;
                 }
@@ -1964,10 +1999,11 @@
             Ft = { type: "Mismatch" },
             Wt = { type: "DisallowEmpty" };
           function qt(e, t, n) {
-            return t === _t && n === Ft || e === _t && t === _t && n === _t ? e
-            : ("If" === e.type && e.else === Ft && t === _t &&
-              (t = e.then, e = e.match),
-              { type: "If", match: e, then: t, else: n });
+            return t === _t && n === Ft || e === _t && t === _t && n === _t
+              ? e
+              : ("If" === e.type && e.else === Ft && t === _t &&
+                (t = e.then, e = e.match),
+                { type: "If", match: e, then: t, else: n });
           }
           function Yt(e) {
             return e.length > 2 && 40 === e.charCodeAt(e.length - 2) &&
@@ -2057,14 +2093,16 @@
               case "Multiplier":
                 return function (e) {
                   var t = _t, n = Ht(e.term);
-                  if (0 === e.max) {n = qt(n, Wt, Ft),
+                  if (0 === e.max) {
+                    n = qt(n, Wt, Ft),
                       (t = qt(n, null, Ft)).then = qt(_t, _t, t),
                       e.comma &&
                       (t.then.else = qt(
                         { type: "Comma", syntax: e },
                         t,
                         Ft,
-                      ));} else {
+                      ));
+                  } else {
                     for (var r = e.min || 1; r <= e.max; r++) {
                       e.comma && t !== _t &&
                       (t = qt({ type: "Comma", syntax: e }, t, Ft)),
@@ -2121,13 +2159,12 @@
             Kt = Ft,
             Gt = Wt,
             Qt = function (e, t) {
-              return "string" == typeof e && (e = Ot(e)),
-                {
-                  type: "MatchGraph",
-                  match: Ht(e),
-                  syntax: t || null,
-                  source: e,
-                };
+              return "string" == typeof e && (e = Ot(e)), {
+                type: "MatchGraph",
+                match: Ht(e),
+                syntax: t || null,
+                source: e,
+              };
             },
             Xt = Object.prototype.hasOwnProperty,
             Zt = Vt,
@@ -2331,9 +2368,10 @@
                     z = Xt.call(n, C) ? n[C][t.name] : null;
                   if (!z || !z.match) {
                     throw new Error(
-                      "Bad syntax reference: " + ("Type" === t.type
-                        ? "<" + t.name + ">"
-                        : "<'" + t.name + "'>"),
+                      "Bad syntax reference: " +
+                        ("Type" === t.type
+                          ? "<" + t.name + ">"
+                          : "<'" + t.name + "'>"),
                     );
                   }
                   if (!1 !== d && null !== f && "Type" === t.type) {
@@ -2390,7 +2428,9 @@
                 case "String":
                   var T = "";
                   for (
-                    S = b; S < e.length && T.length < t.value.length; S++
+                    S = b;
+                    S < e.length && T.length < t.value.length;
+                    S++
                   ) {
                     T += e[S].value;
                   }
@@ -2555,17 +2595,19 @@
               for (var i in n) {
                 var o = !0;
                 if (!1 !== pn.call(n, i)) {
-                  if ("type" === i) {n.type !== e &&
+                  if ("type" === i) {
+                    n.type !== e &&
                       r(
                         n,
                         "Wrong node type `" + n.type + "`, expected `" + e +
                           "`",
-                      );} else if ("loc" === i) {
+                      );
+                  } else if ("loc" === i) {
                     if (null === n.loc) continue;
                     if (n.loc && n.loc.constructor === Object) {
-                      if ("string" != typeof n.loc.source)i += ".source";
+                      if ("string" != typeof n.loc.source) i += ".source";
                       else if (mn(n.loc.start)) {
-                        if (mn(n.loc.end))continue;
+                        if (mn(n.loc.end)) continue;
                         i += ".end";
                       } else i += ".start";
                     }
@@ -2590,15 +2632,19 @@
                             : Array.isArray(l) && (o = n[i] instanceof a);
                       }
                     }
-                  } else {r(
+                  } else {
+                    r(
                       n,
                       "Unknown field `" + i + "` for " + e + " node type",
-                    );}
+                    );
+                  }
                   o || r(n, "Bad value for `" + e + "." + i + "`");
                 }
               }
-              for (var i in t) {pn.call(t, i) && !1 === pn.call(n, i) &&
-                  r(n, "Field `" + e + "." + i + "` is missed");}
+              for (var i in t) {
+                pn.call(t, i) && !1 === pn.call(n, i) &&
+                  r(n, "Field `" + e + "." + i + "` is missed");
+              }
             };
           }
           function fn(e, t) {
@@ -2609,9 +2655,7 @@
               if (!1 !== pn.call(n, a)) {
                 for (
                   var o = [],
-                    s = r[a] = Array.isArray(n[a])
-                      ? n[a].slice()
-                      : [n[a]],
+                    s = r[a] = Array.isArray(n[a]) ? n[a].slice() : [n[a]],
                     l = 0;
                   l < s.length;
                   l++
@@ -2661,17 +2705,18 @@
             Sn = kn("inherit | initial | unset | <-ms-legacy-expression>");
           function Cn(e, t, n) {
             var r = {};
-            for (var i in e) {e[i].syntax &&
-                (r[i] = n ? e[i].syntax : G(e[i].syntax, { compact: t }));}
+            for (var i in e) {
+              e[i].syntax &&
+                (r[i] = n ? e[i].syntax : G(e[i].syntax, { compact: t }));
+            }
             return r;
           }
           function zn(e, t, n) {
             const r = {};
             for (const [i, a] of Object.entries(e)) {
               r[i] = {
-                prelude: a.prelude && (n
-                  ? a.prelude.syntax
-                  : G(a.prelude.syntax, { compact: t })),
+                prelude: a.prelude &&
+                  (n ? a.prelude.syntax : G(a.prelude.syntax, { compact: t })),
                 descriptors: a.descriptors && Cn(a.descriptors, t, n),
               };
             }
@@ -2834,8 +2879,9 @@
               if (n) return n;
               var r = this.getAtrule(e), i = ae.keyword(t);
               return r.descriptors
-                ? r.descriptors[i.name] || r.descriptors[i.basename] ? void 0
-                : new bn("Unknown at-rule descriptor", t)
+                ? r.descriptors[i.name] || r.descriptors[i.basename]
+                  ? void 0
+                  : new bn("Unknown at-rule descriptor", t)
                 : new SyntaxError(
                   "At-rule `@" + e + "` has no known descriptors",
                 );
@@ -2851,8 +2897,11 @@
             },
             matchAtrulePrelude: function (e, t) {
               var n = this.checkAtrulePrelude(e, t);
-              return n ? An(null, n)
-              : t ? Pn(this, this.getAtrule(e).prelude, t, !0) : An(null, null);
+              return n
+                ? An(null, n)
+                : t
+                ? Pn(this, this.getAtrule(e).prelude, t, !0)
+                : An(null, null);
             },
             matchAtruleDescriptor: function (e, t, n) {
               var r = this.checkAtruleDescriptorName(e, t);
@@ -2876,8 +2925,9 @@
             },
             matchType: function (e, t) {
               var n = this.getType(e);
-              return n ? Pn(this, n, t, !1)
-              : An(null, new bn("Unknown type", e));
+              return n
+                ? Pn(this, n, t, !1)
+                : An(null, new bn("Unknown type", e));
             },
             match: function (e, t) {
               return "string" == typeof e || e && e.type
@@ -3018,29 +3068,27 @@
                 this.linesAndColumnsComputed = !0);
             },
             getLocation: function (e, t) {
-              return this.ensureLinesAndColumnsComputed(),
-                {
-                  source: t,
+              return this.ensureLinesAndColumnsComputed(), {
+                source: t,
+                offset: this.startOffset + e,
+                line: this.lines[e],
+                column: this.columns[e],
+              };
+            },
+            getLocationRange: function (e, t, n) {
+              return this.ensureLinesAndColumnsComputed(), {
+                source: n,
+                start: {
                   offset: this.startOffset + e,
                   line: this.lines[e],
                   column: this.columns[e],
-                };
-            },
-            getLocationRange: function (e, t, n) {
-              return this.ensureLinesAndColumnsComputed(),
-                {
-                  source: n,
-                  start: {
-                    offset: this.startOffset + e,
-                    line: this.lines[e],
-                    column: this.columns[e],
-                  },
-                  end: {
-                    offset: this.startOffset + t,
-                    line: this.lines[t],
-                    column: this.columns[t],
-                  },
-                };
+                },
+                end: {
+                  offset: this.startOffset + t,
+                  line: this.lines[t],
+                  column: this.columns[t],
+                },
+              };
             },
           };
           var Bn = On,
@@ -3062,8 +3110,9 @@
                     this.scanner.next();
                     continue;
                   case Nn:
-                    r.ignoreWS ? this.scanner.next()
-                    : r.space = this.WhiteSpace();
+                    r.ignoreWS
+                      ? this.scanner.next()
+                      : r.space = this.WhiteSpace();
                     continue;
                 }
                 if (void 0 === (n = e.getNode.call(this, r))) break;
@@ -3353,16 +3402,16 @@
                     u >= 0;
                     u--
                   ) {
-                    "." === (o = l[u]) ? l.splice(u, 1) : ".." === o
+                    "." === (o = l[u])
+                      ? l.splice(u, 1)
+                      : ".." === o
                       ? c++
                       : c > 0 && ("" === o
                         ? (l.splice(u + 1, c), c = 0)
                         : (l.splice(u, 2), c--));
                   }
                   return "" === (n = l.join("/")) && (n = s ? "/" : "."),
-                    r
-                      ? (r.path = n, a(r))
-                      : n;
+                    r ? (r.path = n, a(r)) : n;
                 }
                 function s(e, t) {
                   "" === e && (e = "."), "" === t && (t = ".");
@@ -3390,7 +3439,7 @@
                     "" === e && (e = "."), e = e.replace(/\/$/, "");
                     for (var n = 0; 0 !== t.indexOf(e + "/");) {
                       var r = e.lastIndexOf("/");
-                      if (r < 0)return t;
+                      if (r < 0) return t;
                       if (
                         (e = e.slice(0, r)).match(/^([^\/]+:\/)?\/*$/)
                       ) {
@@ -3438,11 +3487,9 @@
                 t.toSetString = l ? c : function (e) {
                   return u(e) ? "$" + e : e;
                 },
-                  t.fromSetString = l
-                    ? c
-                    : function (e) {
-                      return u(e) ? e.slice(1) : e;
-                    },
+                  t.fromSetString = l ? c : function (e) {
+                    return u(e) ? e.slice(1) : e;
+                  },
                   t.compareByOriginalPositions = function (e, t, n) {
                     var r = h(e.source, t.source);
                     return 0 !== r ||
@@ -3525,8 +3572,9 @@
             return n;
           },
             ar.prototype.size = function () {
-              return ir ? this._set.size
-              : Object.getOwnPropertyNames(this._set).length;
+              return ir
+                ? this._set.size
+                : Object.getOwnPropertyNames(this._set).length;
             },
             ar.prototype.add = function (e, t) {
               var n = ir ? e : nr.toSetString(e),
@@ -3551,7 +3599,7 @@
               throw new Error('"' + e + '" is not in the set.');
             },
             ar.prototype.at = function (e) {
-              if (e >= 0 && e < this._array.length)return this._array[e];
+              if (e >= 0 && e < this._array.length) return this._array[e];
               throw new Error("No element indexed by " + e);
             },
             ar.prototype.toArray = function () {
@@ -3821,8 +3869,7 @@
             dr = Object.prototype.hasOwnProperty;
           function mr(e, t) {
             var n = e.children, r = null;
-            "function" != typeof t ? n.forEach(this.node, this)
-            : n.forEach(
+            "function" != typeof t ? n.forEach(this.node, this) : n.forEach(
               (function (e) {
                 null !== r && t.call(this, r), this.node(e), r = e;
               }),
@@ -3920,9 +3967,9 @@
                 Array.isArray(n[i]) || (a = [n[i]]);
                 for (var s = 0; s < a.length; s++) {
                   var l = a[s];
-                  null === l ? o.nullable = !0
-                  : "string" == typeof l ? o.type = "node"
-                  : Array.isArray(l) && (o.type = "list");
+                  null === l ? o.nullable = !0 : "string" == typeof l
+                    ? o.type = "node"
+                    : Array.isArray(l) && (o.type = "list");
                 }
                 o.type && r.push(o);
               }
@@ -5648,7 +5695,9 @@
                   n = null !== e.b && void 0 !== e.b;
                 t
                   ? (this.chunk(
-                    "+1" === e.a ? "+n" : "1" === e.a
+                    "+1" === e.a
+                      ? "+n"
+                      : "1" === e.a
                       ? "n"
                       : "-1" === e.a
                       ? "-n"
@@ -5755,11 +5804,10 @@
                     this.scanner.next();
                     break;
                   case si:
-                    i =
-                      this.atrule.hasOwnProperty(t) &&
+                    i = this.atrule.hasOwnProperty(t) &&
                         "function" == typeof this.atrule[t].block
-                        ? this.atrule[t].block.call(this)
-                        : this.Block(ui.call(this));
+                      ? this.atrule[t].block.call(this)
+                      : this.Block(ui.call(this));
                 }
                 return {
                   type: "Atrule",
@@ -5787,11 +5835,10 @@
                 var t = null;
                 return null !== e && (e = e.toLowerCase()),
                   this.scanner.skipSC(),
-                  t =
-                    this.atrule.hasOwnProperty(e) &&
+                  t = this.atrule.hasOwnProperty(e) &&
                       "function" == typeof this.atrule[e].prelude
-                      ? this.atrule[e].prelude.call(this)
-                      : this.readSequence(this.scope.AtrulePrelude),
+                    ? this.atrule[e].prelude.call(this)
+                    : this.readSequence(this.scope.AtrulePrelude),
                   this.scanner.skipSC(),
                   !0 !== this.scanner.eof && this.scanner.tokenType !== mi &&
                   this.scanner.tokenType !== di &&
@@ -5950,12 +5997,11 @@
                       r.push(t.call(this));
                   }
                 }
-                return this.scanner.eof || this.eat(Oi),
-                  {
-                    type: "Block",
-                    loc: this.getLocation(n, this.scanner.tokenStart),
-                    children: r,
-                  };
+                return this.scanner.eof || this.eat(Oi), {
+                  type: "Block",
+                  loc: this.getLocation(n, this.scanner.tokenStart),
+                  children: r,
+                };
               },
               generate: function (e) {
                 this.chunk("{"),
@@ -5996,11 +6042,10 @@
               structure: [],
               parse: function () {
                 var e = this.scanner.tokenStart;
-                return this.eat(qi),
-                  {
-                    type: "CDC",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                  };
+                return this.eat(qi), {
+                  type: "CDC",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                };
               },
               generate: function () {
                 this.chunk("--\x3e");
@@ -6012,11 +6057,10 @@
               structure: [],
               parse: function () {
                 var e = this.scanner.tokenStart;
-                return this.eat(Ui),
-                  {
-                    type: "CDO",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                  };
+                return this.eat(Ui), {
+                  type: "CDO",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                };
               },
               generate: function () {
                 this.chunk("\x3c!--");
@@ -6176,9 +6220,7 @@
                 this.chunk(":"),
                 this.node(e.value),
                 e.important && this.chunk(
-                  !0 === e.important
-                    ? "!important"
-                    : "!" + e.important,
+                  !0 === e.important ? "!important" : "!" + e.important,
                 );
             },
             walkContext: "declaration",
@@ -6252,16 +6294,15 @@
               structure: { value: String, unit: String },
               parse: function () {
                 var e = this.scanner.tokenStart, t = va(this.scanner.source, e);
-                return this.eat(xa),
-                  {
-                    type: "Dimension",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                    value: this.scanner.source.substring(e, t),
-                    unit: this.scanner.source.substring(
-                      t,
-                      this.scanner.tokenStart,
-                    ),
-                  };
+                return this.eat(xa), {
+                  type: "Dimension",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                  value: this.scanner.source.substring(e, t),
+                  unit: this.scanner.source.substring(
+                    t,
+                    this.scanner.tokenStart,
+                  ),
+                };
               },
               generate: function (e) {
                 this.chunk(e.value), this.chunk(e.unit);
@@ -6301,12 +6342,11 @@
               structure: { value: String },
               parse: function () {
                 var e = this.scanner.tokenStart;
-                return this.eat(za),
-                  {
-                    type: "Hash",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                    value: this.scanner.substrToCursor(e + 1),
-                  };
+                return this.eat(za), {
+                  type: "Hash",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                  value: this.scanner.substrToCursor(e + 1),
+                };
               },
               generate: function (e) {
                 this.chunk("#"), this.chunk(e.value);
@@ -6336,12 +6376,11 @@
               structure: { name: String },
               parse: function () {
                 var e = this.scanner.tokenStart;
-                return this.eat(La),
-                  {
-                    type: "IdSelector",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                    name: this.scanner.substrToCursor(e + 1),
-                  };
+                return this.eat(La), {
+                  type: "IdSelector",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                  name: this.scanner.substrToCursor(e + 1),
+                };
               },
               generate: function (e) {
                 this.chunk("#"), this.chunk(e.name);
@@ -6374,8 +6413,9 @@
                     this.eat(Ma), this.scanner.skipSC(), this.scanner.tokenType
                   ) {
                     case Ba:
-                      n = this.lookupNonWSType(1) === ja ? this.Ratio()
-                      : this.Number();
+                      n = this.lookupNonWSType(1) === ja
+                        ? this.Ratio()
+                        : this.Number();
                       break;
                     case Ia:
                       n = this.Dimension();
@@ -6390,13 +6430,12 @@
                   }
                   this.scanner.skipSC();
                 }
-                return this.eat(Ra),
-                  {
-                    type: "MediaFeature",
-                    loc: this.getLocation(t, this.scanner.tokenStart),
-                    name: e,
-                    value: n,
-                  };
+                return this.eat(Ra), {
+                  type: "MediaFeature",
+                  loc: this.getLocation(t, this.scanner.tokenStart),
+                  name: e,
+                  value: n,
+                };
               },
               generate: function (e) {
                 this.chunk("("),
@@ -6501,12 +6540,11 @@
               structure: { value: String },
               parse: function () {
                 var e = this.scanner.tokenStart;
-                return this.scanner.next(),
-                  {
-                    type: "Operator",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                    value: this.scanner.substrToCursor(e),
-                  };
+                return this.scanner.next(), {
+                  type: "Operator",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                  value: this.scanner.substrToCursor(e),
+                };
               },
               generate: function (e) {
                 this.chunk(e.value);
@@ -6540,12 +6578,11 @@
               structure: { value: String },
               parse: function () {
                 var e = this.scanner.tokenStart, t = to(this.scanner.source, e);
-                return this.eat(no),
-                  {
-                    type: "Percentage",
-                    loc: this.getLocation(e, this.scanner.tokenStart),
-                    value: this.scanner.source.substring(e, t),
-                  };
+                return this.eat(no), {
+                  type: "Percentage",
+                  loc: this.getLocation(e, this.scanner.tokenStart),
+                  value: this.scanner.source.substring(e, t),
+                };
               },
               generate: function (e) {
                 this.chunk(e.value), this.chunk("%");
@@ -6941,7 +6978,8 @@
                       n++;
                     }
                     for (
-                      ; n < r && ns(this.scanner.source.charCodeAt(r - 1));
+                      ;
+                      n < r && ns(this.scanner.source.charCodeAt(r - 1));
                     ) {
                       r--;
                     }
@@ -7013,11 +7051,10 @@
                 parse: function (e) {
                   this.scanner.skipSC();
                   var t, n = this.scanner.tokenStart, r = n, i = null;
-                  return t =
-                    this.scanner.lookupValue(0, "odd") ||
+                  return t = this.scanner.lookupValue(0, "odd") ||
                       this.scanner.lookupValue(0, "even")
-                      ? this.Identifier()
-                      : this.AnPlusB(),
+                    ? this.Identifier()
+                    : this.AnPlusB(),
                     this.scanner.skipSC(),
                     e && this.scanner.lookupValue(0, "of")
                       ? (this.scanner.next(),
@@ -7154,8 +7191,9 @@
                       this.scanner.tokenStart,
                       this.scanner.tokenEnd,
                       "url(",
-                    ) ? this.Url()
-                  : this.Function(this.readSequence, e.recognizer);
+                    )
+                    ? this.Url()
+                    : this.Function(this.readSequence, e.recognizer);
                 case vs:
                   return this.Url();
                 case fs:
@@ -7165,7 +7203,8 @@
                       117,
                     ) &&
                       ds(this.scanner.source, this.scanner.tokenStart + 1, 43)
-                    ? this.UnicodeRange() : this.Identifier();
+                    ? this.UnicodeRange()
+                    : this.Identifier();
                 case Ps:
                   var t = this.scanner.source.charCodeAt(
                     this.scanner.tokenStart,
@@ -7476,8 +7515,7 @@
             },
             dl = { node: hs },
             ml = { version: "1.1.2" },
-            gl =
-              (ll = Object.freeze({
+            gl = (ll = Object.freeze({
                   __proto__: null,
                   version: "1.1.2",
                   default: ml,
@@ -8167,10 +8205,10 @@
 
     function packNumber(value, item) {
       // omit plus sign only if no prev or prev is safe type
-      var regexp =
-        item && item.prev !== null &&
+      var regexp = item && item.prev !== null &&
           unsafeToRemovePlusSignAfter.hasOwnProperty(item.prev.data.type)
-          ? KEEP_PLUSSIGN : OMIT_PLUSSIGN;
+        ? KEEP_PLUSSIGN
+        : OMIT_PLUSSIGN;
 
       // 100 -> '100'
       // 00100 -> '100'
@@ -10392,8 +10430,9 @@
     }
 
     function processRule$5(node, item, list) {
-      var avoidRulesMerge = this.block !== null ? this.block.avoidRulesMerge
-      : false;
+      var avoidRulesMerge = this.block !== null
+        ? this.block.avoidRulesMerge
+        : false;
       var selectors = node.prelude.children;
       var block = node.block;
       var disallowDownMarkers = Object.create(null);
@@ -10703,8 +10742,9 @@
       options = options || {};
 
       var compressOptions = {
-        logger: typeof options.logger === "function" ? options.logger
-        : function () {},
+        logger: typeof options.logger === "function"
+          ? options.logger
+          : function () {},
         restructuring: getRestructureOption(options),
         forceMediaMerge: Boolean(options.forceMediaMerge),
         usage: options.usage ? usage.buildIndex(options.usage) : false,

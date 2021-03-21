@@ -203,7 +203,7 @@ export function fn(root, opts) {
 
     for (selectedEl of selector.selectedEls) {
       // class
-      var firstSubSelector = selector.item.data.children.first();
+      var firstSubSelector = selector.item.data.children.first;
       if (firstSubSelector.type === "ClassSelector") {
         selectedEl.class.remove(firstSubSelector.name);
       }
@@ -238,13 +238,13 @@ export function fn(root, opts) {
         }
 
         // clean up <style/> rulesets without any css selectors left
-        if (node.type === "Rule" && node.prelude.children.isEmpty()) {
+        if (node.type === "Rule" && !node.prelude.children.size) {
           list.remove(item);
         }
       },
     });
 
-    if (style.cssAst.children.isEmpty()) {
+    if (!style.cssAst.children.size) {
       // clean up now emtpy <style/>s
       var styleParentEl = style.styleEl.parentNode;
       styleParentEl.spliceContent(

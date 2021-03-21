@@ -1,7 +1,7 @@
 export const EOL = Deno.build.os == "windows" ? "\r\n" : "\n";
 export { default as stable } from "https://jspm.dev/stable@0.1.8";
+export { default as specificity } from "./deps/csso-specificity.js";
 export * from "./deps/sax.js";
-export { default as specificity } from "https://jspm.dev/csso@4.2.0/lib/restructure/prepare/specificity";
 export * from "https://jspm.dev/css-select@3.1.2";
 
 //CommonJS dependencies

@@ -533,8 +533,9 @@
       for (let i = startLine; i <= endLine; i++) {
         if (i >= 0 && i < lines.length) {
           lines[i] = lines[i].replace(/\t/g, TAB_REPLACEMENT);
-          lines[i] =
-            (cutLeft > 0 && lines[i].length > cutLeft ? "\u2026" : "") +
+          lines[i] = (cutLeft > 0 && lines[i].length > cutLeft
+            ? "\u2026"
+            : "") +
             lines[i].substr(cutLeft, MAX_LINE_LENGTH - 2) +
             (lines[i].length > cutLeft + MAX_LINE_LENGTH - 1 ? "\u2026" : "");
         }
@@ -1327,8 +1328,9 @@
             break loop;
           }
 
-          offset = cursor > 0 ? this.offsetAndType[cursor - 1] & OFFSET_MASK
-          : this.firstCharOffset;
+          offset = cursor > 0
+            ? this.offsetAndType[cursor - 1] & OFFSET_MASK
+            : this.firstCharOffset;
 
           // check stop condition
           switch (stopConsume(this.source.charCodeAt(offset))) {
@@ -1352,7 +1354,9 @@
 
       forEachToken(fn) {
         for (
-          let i = 0, offset = this.firstCharOffset; i < this.tokenCount; i++
+          let i = 0, offset = this.firstCharOffset;
+          i < this.tokenCount;
+          i++
         ) {
           const start = offset;
           const item = this.offsetAndType[i];
@@ -1405,8 +1409,9 @@
 
       return (
         (comma ? "#" : "") +
-        (min === max ? "{" + min + "}"
-        : "{" + min + "," + (max !== 0 ? max : "") + "}")
+        (min === max
+          ? "{" + min + "}"
+          : "{" + min + "," + (max !== 0 ? max : "") + "}")
       );
     }
 
@@ -1427,8 +1432,9 @@
     }
 
     function generateSequence(node, decorate, forceBraces, compact) {
-      const combinator = node.combinator === " " || compact ? node.combinator
-      : " " + node.combinator + " ";
+      const combinator = node.combinator === " " || compact
+        ? node.combinator
+        : " " + node.combinator + " ";
       const result = node.terms
         .map((term) => generate(term, decorate, forceBraces, compact))
         .join(combinator);
@@ -1458,9 +1464,10 @@
           );
 
         case "Type":
-          result = "<" + node.name + (node.opts
-            ? decorate(generateTypeOpts(node.opts), node.opts)
-            : "") +
+          result = "<" + node.name +
+            (node.opts
+              ? decorate(generateTypeOpts(node.opts), node.opts)
+              : "") +
             ">";
           break;
 
@@ -1520,7 +1527,8 @@
       const tokens = matchResult.tokens;
       const longestMatch = matchResult.longestMatch;
       const mismatchNode = longestMatch < tokens.length
-        ? tokens[longestMatch].node || null : null;
+        ? tokens[longestMatch].node || null
+        : null;
       const badNode = mismatchNode !== node ? mismatchNode : null;
       let mismatchOffset = 0;
       let mismatchLength = 0;
@@ -1592,8 +1600,9 @@
 
         loc.offset += extra.length;
         loc.line += lines.length - 1;
-        loc.column = lines.length === 1 ? loc.column + extra.length
-        : lines.pop().length + 1;
+        loc.column = lines.length === 1
+          ? loc.column + extra.length
+          : lines.pop().length + 1;
       }
 
       return loc;
@@ -2864,7 +2873,8 @@
       if (opts && opts.type === "Range") {
         const num = Number(
           numEnd !== undefined && numEnd !== value.length
-            ? value.substr(0, numEnd) : value,
+            ? value.substr(0, numEnd)
+            : value,
         );
 
         if (isNaN(num)) {
@@ -3197,11 +3207,10 @@
         if (type !== null) {
           // check for IE postfix hack, i.e. 123px\0 or 123px\9
           const reverseSolidusOffset = token.value.indexOf("\\", numberEnd);
-          const unit =
-            reverseSolidusOffset === -1 ||
+          const unit = reverseSolidusOffset === -1 ||
               !isPostfixIeHack(token.value, reverseSolidusOffset)
-              ? token.value.substr(numberEnd)
-              : token.value.substring(numberEnd, reverseSolidusOffset);
+            ? token.value.substr(numberEnd)
+            : token.value.substring(numberEnd, reverseSolidusOffset);
 
           if (type.has(unit.toLowerCase()) === false) {
             return 0;
@@ -3296,7 +3305,9 @@
 
       // The first digit of an integer may be immediately preceded by `-` or `+` to indicate the integer’s sign.
       let i = token.value.charCodeAt(0) === 0x002B || // U+002B PLUS SIGN (+)
-          token.value.charCodeAt(0) === 0x002D ? 1 : 0; // U+002D HYPHEN-MINUS (-)
+          token.value.charCodeAt(0) === 0x002D
+        ? 1
+        : 0; // U+002D HYPHEN-MINUS (-)
 
       // When written literally, an integer is one or more decimal digits 0 through 9 ...
       for (; i < token.value.length; i++) {
@@ -3911,7 +3922,8 @@
 
         case LESSTHANSIGN:
           return tokenizer.nextCharCode() === APOSTROPHE
-            ? readProperty(tokenizer) : readType(tokenizer);
+            ? readProperty(tokenizer)
+            : readType(tokenizer);
 
         case VERTICALLINE:
           return {
@@ -4219,8 +4231,8 @@
               }
 
               if (map !== null) {
-                const key =
-                  (isFunctionType(term.name) ? term.name.slice(0, -1)
+                const key = (isFunctionType(term.name)
+                  ? term.name.slice(0, -1)
                   : term.name).toLowerCase();
                 if (key in map === false) {
                   map[key] = term;
@@ -4986,13 +4998,15 @@
           case "Property": {
             const syntaxDict = state.type === "Type" ? "types" : "properties";
             const dictSyntax = hasOwnProperty$1.call(syntaxes, syntaxDict)
-              ? syntaxes[syntaxDict][state.name] : null;
+              ? syntaxes[syntaxDict][state.name]
+              : null;
 
             if (!dictSyntax || !dictSyntax.match) {
               throw new Error(
                 "Bad syntax reference: " +
-                  (state.type === "Type" ? "<" + state.name + ">"
-                  : "<'" + state.name + "'>"),
+                  (state.type === "Type"
+                    ? "<" + state.name + ">"
+                    : "<'" + state.name + "'>"),
               );
             }
 
@@ -5080,9 +5094,10 @@
                 state = isCommaContextEnd(token) ? MISMATCH$1 : MATCH$1;
               }
             } else {
-              state =
-                isCommaContextStart(matchStack.token) ||
-                  isCommaContextEnd(token) ? MATCH$1 : MISMATCH$1;
+              state = isCommaContextStart(matchStack.token) ||
+                  isCommaContextEnd(token)
+                ? MATCH$1
+                : MISMATCH$1;
             }
 
             break;
@@ -5507,7 +5522,8 @@
 
         const docsTypes = [];
         const fieldTypes = fields[key] = Array.isArray(structure[key])
-          ? structure[key].slice() : [structure[key]];
+          ? structure[key].slice()
+          : [structure[key]];
 
         for (let i = 0; i < fieldTypes.length; i++) {
           const fieldType = fieldTypes[i];
@@ -6011,7 +6027,8 @@
       getAtruleDescriptor(atruleName, name) {
         return this.atrules.hasOwnProperty(atruleName) &&
             this.atrules.declarators
-          ? this.atrules[atruleName].declarators[name] || null : null;
+          ? this.atrules[atruleName].declarators[name] || null
+          : null;
       }
       getProperty(propertyName, fallbackBasename = true) {
         const property = names$1.property(propertyName);
@@ -6041,8 +6058,9 @@
               const map = node.type === "Type"
                 ? syntax.types
                 : syntax.properties;
-              const brokenMap = node.type === "Type" ? brokenTypes
-              : brokenProperties;
+              const brokenMap = node.type === "Type"
+                ? brokenTypes
+                : brokenProperties;
 
               if (
                 !hasOwnProperty.call(map, node.name) ||
@@ -6448,7 +6466,8 @@
 
           charCodeAt(offset) {
             return offset >= 0 && offset < source.length
-              ? source.charCodeAt(offset) : 0;
+              ? source.charCodeAt(offset)
+              : 0;
           },
           cmpChar(offset, charCode) {
             return cmpChar$3(source, offset, charCode);
@@ -6501,10 +6520,12 @@
               const head = this.getFirstListNode(list);
               const tail = this.getLastListNode(list);
               return locationMap.getLocationRange(
-                head !== null ? head.loc.start.offset - locationMap.startOffset
-                : this.tokenStart,
-                tail !== null ? tail.loc.end.offset - locationMap.startOffset
-                : this.tokenStart,
+                head !== null
+                  ? head.loc.start.offset - locationMap.startOffset
+                  : this.tokenStart,
+                tail !== null
+                  ? tail.loc.end.offset - locationMap.startOffset
+                  : this.tokenStart,
                 filename,
               );
             }
@@ -6515,7 +6536,8 @@
           error(message, offset) {
             const location =
               typeof offset !== "undefined" && offset < source.length
-                ? locationMap.getLocation(offset) : this.eof
+                ? locationMap.getLocation(offset)
+                : this.eof
                 ? locationMap.getLocation(
                   findWhiteSpaceStart$1(source, source.length - 1),
                 )
@@ -6547,17 +6569,22 @@
         filename = options.filename || "<unknown>";
         needPositions = Boolean(options.positions);
         onParseError = typeof options.onParseError === "function"
-          ? options.onParseError : noop$2;
+          ? options.onParseError
+          : noop$2;
         onParseErrorThrow = false;
 
         parser.parseAtrulePrelude = "parseAtrulePrelude" in options
-          ? Boolean(options.parseAtrulePrelude) : true;
+          ? Boolean(options.parseAtrulePrelude)
+          : true;
         parser.parseRulePrelude = "parseRulePrelude" in options
-          ? Boolean(options.parseRulePrelude) : true;
+          ? Boolean(options.parseRulePrelude)
+          : true;
         parser.parseValue = "parseValue" in options
-          ? Boolean(options.parseValue) : true;
+          ? Boolean(options.parseValue)
+          : true;
         parser.parseCustomProperty = "parseCustomProperty" in options
-          ? Boolean(options.parseCustomProperty) : false;
+          ? Boolean(options.parseCustomProperty)
+          : false;
 
         const { context = "default", onComment } = options;
 
@@ -7540,8 +7567,9 @@
      * @returns Number
      */
     ArraySet.prototype.size = function ArraySet_size() {
-      return hasNativeMap ? this._set.size
-      : Object.getOwnPropertyNames(this._set).length;
+      return hasNativeMap
+        ? this._set.size
+        : Object.getOwnPropertyNames(this._set).length;
     };
 
     /**
@@ -7551,8 +7579,9 @@
      */
     ArraySet.prototype.add = function ArraySet_add(aStr, aAllowDuplicates) {
       var sStr = hasNativeMap ? aStr : util.toSetString(aStr);
-      var isDuplicate = hasNativeMap ? this.has(aStr)
-      : has.call(this._set, sStr);
+      var isDuplicate = hasNativeMap
+        ? this.has(aStr)
+        : has.call(this._set, sStr);
       var idx = this._array.length;
       if (!isDuplicate || aAllowDuplicates) {
         this._array.push(aStr);
@@ -8883,8 +8912,9 @@
         fork: function (extension) {
           const base = mix_1({}, config); // copy of config
           return createSyntax(
-            typeof extension === "function" ? extension(base, Object.assign)
-            : mix_1(base, extension),
+            typeof extension === "function"
+              ? extension(base, Object.assign)
+              : mix_1(base, extension),
           );
         },
       };
@@ -10198,8 +10228,9 @@
       }
 
       checkTokenIsInteger.call(this, sign !== 0);
-      return sign === HYPHENMINUS$4 ? "-" + this.consume(Number$1)
-      : this.consume(Number$1);
+      return sign === HYPHENMINUS$4
+        ? "-" + this.consume(Number$1)
+        : this.consume(Number$1);
     }
 
     // An+B microsyntax https://www.w3.org/TR/css-syntax-3/#anb
@@ -11070,10 +11101,12 @@
         const startToken = this.tokenIndex;
         const property = readProperty$1.call(this);
         const customProperty = isCustomProperty$1(property);
-        const parseValue = customProperty ? this.parseCustomProperty
-        : this.parseValue;
-        const consumeRaw = customProperty ? consumeCustomPropertyRaw
-        : consumeValueRaw;
+        const parseValue = customProperty
+          ? this.parseCustomProperty
+          : this.parseValue;
+        const consumeRaw = customProperty
+          ? consumeCustomPropertyRaw
+          : consumeValueRaw;
         let important = false;
         let value;
 
@@ -11096,7 +11129,9 @@
           customProperty && value.type === "Value" && value.children.isEmpty
         ) {
           for (
-            let offset = valueStart - this.tokenIndex; offset <= 0; offset++
+            let offset = valueStart - this.tokenIndex;
+            offset <= 0;
+            offset++
           ) {
             if (this.lookupType(offset) === WhiteSpace$a) {
               value.children.appendData({
@@ -12601,7 +12636,8 @@
 
         case FunctionToken$8:
           return this.cmpStr(this.tokenStart, this.tokenEnd, "url(")
-            ? this.Url() : this.Function(this.readSequence, context.recognizer);
+            ? this.Url()
+            : this.Function(this.readSequence, context.recognizer);
 
         case Url$4:
           return this.Url();
@@ -12763,17 +12799,17 @@
         children.push(this.Operator());
 
         const startIndex = this.tokenIndex;
-        const value = this.parseCustomProperty
-          ? this.Value(null)
-          : this.Raw(
-            this.tokenIndex,
-            this.consumeUntilExclamationMarkOrSemicolon,
-            false,
-          );
+        const value = this.parseCustomProperty ? this.Value(null) : this.Raw(
+          this.tokenIndex,
+          this.consumeUntilExclamationMarkOrSemicolon,
+          false,
+        );
 
         if (value.type === "Value" && value.children.isEmpty) {
           for (
-            let offset = startIndex - this.tokenIndex; offset <= 0; offset++
+            let offset = startIndex - this.tokenIndex;
+            offset <= 0;
+            offset++
           ) {
             if (this.lookupType(offset) === WhiteSpace$g) {
               value.children.appendData({
