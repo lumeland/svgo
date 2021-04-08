@@ -1,4 +1,6 @@
-export const type = "full";
+import { closestByName } from "../lib/xast.js";
+
+export const type = "perItem";
 
 export const active = false;
 
@@ -48,30 +50,32 @@ plugins: [
  *
  * @author April Arcus
  */
-export function fn(data, params) {
-  if (!params || !(Array.isArray(params.attributes) || params.attribute)) {
-    console.error(ENOCLS);
-    return data;
-  }
+export function fn(node, params) {
+  if (
+    node.type === "element" &&
+    node.name === "svg" &&
+    closestByName(node.parentNode, "svg") == null
+  ) {
+    if (!params || !(Array.isArray(params.attributes) || params.attribute)) {
+      console.error(ENOCLS);
+      return;
+    }
 
-  var attributes = params.attributes || [params.attribute],
-    svg = data.children[0];
+    const attributes = params.attributes || [params.attribute];
 
-  if (svg.isElem("svg")) {
-    attributes.forEach(function (attribute) {
+    for (const attribute of attributes) {
       if (typeof attribute === "string") {
-        if (svg.attributes[attribute] == null) {
-          svg.attributes[attribute] = undefined;
+        if (node.attributes[attribute] == null) {
+          node.attributes[attribute] = undefined;
         }
-      } else if (typeof attribute === "object") {
-        Object.keys(attribute).forEach(function (key) {
-          if (svg.attributes[key] == null) {
-            svg.attributes[key] = attribute[key];
-          }
-        });
       }
-    });
+      if (typeof attribute === "object") {
+        for (const key of Object.keys(attribute)) {
+          if (node.attributes[key] == null) {
+            node.attributes[key] = attribute[key];
+          }
+        }
+      }
+    }
   }
-
-  return data;
 }
