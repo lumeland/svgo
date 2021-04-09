@@ -1,11 +1,11 @@
+import { inheritableAttrs, pathElems } from "./_collections.js";
+
 export const type = "perItemReverse";
 
 export const active = true;
 
 export const description =
   "moves elements attributes to the existing group wrapper";
-
-import { inheritableAttrs, pathElems } from "./_collections.js";
 
 /**
  * Collapse content's intersected and inheritable
@@ -32,14 +32,22 @@ import { inheritableAttrs, pathElems } from "./_collections.js";
  * @author Kir Belevich
  */
 export function fn(item) {
-  if (item.isElem("g") && item.children.length > 1) {
+  if (
+    item.type === "element" &&
+    item.name === "g" &&
+    item.children.length > 1
+  ) {
     var intersection = {},
       hasTransform = false,
-      hasClip = item.hasAttr("clip-path") || item.hasAttr("mask"),
+      hasClip = item.attributes["clip-path"] != null ||
+        item.attributes.mask != null,
       intersected = item.children.every(function (inner) {
-        if (inner.type === "element" && inner.hasAttr()) {
+        if (
+          inner.type === "element" &&
+          Object.keys(inner.attributes).length !== 0
+        ) {
           // don't mess with possible styles (hack until CSS parsing is implemented)
-          if (inner.hasAttr("class")) return false;
+          if (inner.attributes.class) return false;
           if (!Object.keys(intersection).length) {
             intersection = inner.attributes;
           } else {
@@ -66,7 +74,7 @@ export function fn(item) {
 
             if (name === "transform") {
               if (!hasTransform) {
-                if (item.hasAttr("transform")) {
+                if (item.attributes.transform != null) {
                   item.attributes.transform = item.attributes.transform + " " +
                     value;
                 } else {

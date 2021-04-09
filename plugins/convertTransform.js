@@ -48,17 +48,17 @@ var degRound,
 export function fn(item, params) {
   if (item.type === "element") {
     // transform
-    if (item.hasAttr("transform")) {
+    if (item.attributes.transform != null) {
       convertTransform(item, "transform", params);
     }
 
     // gradientTransform
-    if (item.hasAttr("gradientTransform")) {
+    if (item.attributes.gradientTransform != null) {
       convertTransform(item, "gradientTransform", params);
     }
 
     // patternTransform
-    if (item.hasAttr("patternTransform")) {
+    if (item.attributes.patternTransform != null) {
       convertTransform(item, "patternTransform", params);
     }
   }

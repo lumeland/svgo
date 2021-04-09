@@ -1,3 +1,5 @@
+import { pathElems, referencesProps } from "./_collections.js";
+
 export const type = "perItem";
 
 export const active = true;
@@ -5,9 +7,7 @@ export const active = true;
 export const description =
   "moves some group attributes to the content elements";
 
-import * as collections from "./_collections.js";
-var pathElems = collections.pathElems.concat(["g", "text"]),
-  referencesProps = collections.referencesProps;
+const pathElemsWithGroupsAndText = [...pathElems, "g", "text"];
 
 /**
  * Move group attrs to the content elements.
@@ -40,7 +40,9 @@ export function fn(item) {
           referencesProps.includes(name) && value.includes("url("),
       ) === false &&
     item.children.every(
-      (inner) => inner.isElem(pathElems) && !inner.hasAttr("id"),
+      (inner) =>
+        pathElemsWithGroupsAndText.includes(inner.name) &&
+        inner.attributes.id == null,
     )
   ) {
     for (const inner of item.children) {
