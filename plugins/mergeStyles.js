@@ -1,85 +1,83 @@
-import { closestByName, querySelectorAll } from "../lib/xast.js";
-import { getCssStr, setCssStr } from "../lib/css-tools.js";
+import { closestByName, detachNodeFromParent } from "../lib/xast.js";
+import JSAPI from "../lib/svgo/jsAPI.js";
 
-export const type = "full";
+export const type = "visitor";
 export const active = true;
 export const description = "merge multiple style elements into one";
 
 /**
  * Merge multiple style elements into one.
  *
- * @param {Object} document document element
- *
  * @author strarsis <strarsis@gmail.com>
  */
-export function fn(document) {
-  // collect <style/>s with valid type attribute (preserve order)
-  const styleElements = querySelectorAll(document, "style");
+export function fn() {
+  let firstStyleElement = null;
+  let collectedStyles = "";
+  let styleContentType = "text";
 
-  // no <styles/>s, nothing to do
-  if (styleElements.length === 0) {
-    return document;
-  }
+  const enterElement = (node) => {
+    // collect style elements
+    if (node.name !== "style") {
+      return;
+    }
 
-  const styles = [];
-  for (const styleElement of styleElements) {
+    // skip <style> with invalid type attribute
     if (
-      styleElement.attributes.type &&
-      styleElement.attributes.type !== "text/css"
+      node.attributes.type != null &&
+      node.attributes.type !== "" &&
+      node.attributes.type !== "text/css"
     ) {
-      // skip <style> with invalid type attribute
-      continue;
+      return;
     }
 
-    if (closestByName(styleElement, "foreignObject")) {
-      // skip <foreignObject> content
-      continue;
+    // skip <foreignObject> content
+    if (closestByName(node, "foreignObject")) {
+      return;
     }
 
-    const cssString = getCssStr(styleElement);
+    // extract style element content
+    let css = "";
+    for (const child of node.children) {
+      if (child.type === "text") {
+        css += child.value;
+      }
+      if (child.type === "cdata") {
+        styleContentType = "cdata";
+        css += child.value;
+      }
+    }
 
-    styles.push({
-      styleElement: styleElement,
+    // remove empty style elements
+    if (css.trim().length === 0) {
+      detachNodeFromParent(node);
+      return;
+    }
 
-      mq: styleElement.attributes.media,
-      cssStr: cssString,
-    });
-  }
-
-  const collectedStyles = [];
-  for (let styleNo = 0; styleNo < styles.length; styleNo += 1) {
-    const style = styles[styleNo];
-
-    if (style.mq) {
-      const wrappedStyles = `@media ${style.mq}{${style.cssStr}}`;
-      collectedStyles.push(wrappedStyles);
+    // collect css and wrap with media query if present in attribute
+    if (node.attributes.media == null) {
+      collectedStyles += css;
     } else {
-      collectedStyles.push(style.cssStr);
+      collectedStyles += `@media ${node.attributes.media}{${css}}`;
+      delete node.attributes.media;
     }
 
-    // remove all processed style elements – except the first one
-    if (styleNo > 0) {
-      removeFromParent(style.styleElement);
+    // combine collected styles in the first style element
+    if (firstStyleElement == null) {
+      firstStyleElement = node;
+    } else {
+      detachNodeFromParent(node);
+      firstStyleElement.children = [
+        new JSAPI(
+          { type: styleContentType, value: collectedStyles },
+          firstStyleElement,
+        ),
+      ];
     }
-  }
-  const collectedStylesString = collectedStyles.join("");
+  };
 
-  // combine collected styles in the first style element
-  const firstStyle = styles[0];
-  delete firstStyle.styleElement.attributes.media; // remove media mq attribute as CSS media queries are used
-  if (collectedStylesString.trim().length > 0) {
-    setCssStr(firstStyle.styleElement, collectedStylesString);
-  } else {
-    removeFromParent(firstStyle.styleElement);
-  }
-
-  return document;
-}
-
-function removeFromParent(element) {
-  const parentElement = element.parentNode;
-  return parentElement.children.splice(
-    parentElement.children.indexOf(element),
-    1,
-  );
+  return {
+    element: {
+      enter: enterElement,
+    },
+  };
 }
