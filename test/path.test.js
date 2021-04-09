@@ -143,27 +143,25 @@ Deno.test("should avoid space before first, negative and decimals", () => {
   );
 });
 Deno.test("should configure precision", () => {
+  const pathData = [
+    { command: "M", args: [0, -1.9876] },
+    { command: "L", args: [0.3, 3.14159265] },
+    { command: "L", args: [-0.3, -3.14159265] },
+    { command: "L", args: [100, 200] },
+  ];
   assertEquals(
     stringifyPathData({
-      pathData: [
-        { command: "M", args: [0, -1.9876] },
-        { command: "L", args: [0.3, 3.14159265] },
-        { command: "L", args: [100, 200] },
-      ],
+      pathData,
       precision: 3,
     }),
-    "M0-1.988.3 3.142 100 200",
+    "M0-1.988.3 3.142-.3-3.142 100 200",
   );
   assertEquals(
     stringifyPathData({
-      pathData: [
-        { command: "M", args: [0, -1.9876] },
-        { command: "L", args: [0.3, 3.14159265] },
-        { command: "L", args: [100, 200] },
-      ],
+      pathData,
       precision: 0,
     }),
-    "M0-2 0 3 100 200",
+    "M0-2 0 3 0-3 100 200",
   );
 });
 Deno.test("allows to avoid spaces after arc flags", () => {
