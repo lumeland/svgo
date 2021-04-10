@@ -55,7 +55,11 @@ let arcTolerance;
  * @author Kir Belevich
  */
 export function fn(item, params) {
-  if (item.isElem(pathElems) && item.hasAttr("d")) {
+  if (
+    item.type === "element" &&
+    pathElems.includes(item.name) &&
+    item.attributes.d != null
+  ) {
     const computedStyle = computeStyle(item);
     precision = params.floatPrecision;
     error = precision !== false

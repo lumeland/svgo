@@ -57,9 +57,11 @@ export function applyTransforms(elem, pathData, params) {
       let hasStrokeWidth = false;
 
       do {
-        if (idElem.hasAttr("stroke-width")) hasStrokeWidth = true;
+        if (idElem.attributes["stroke-width"]) {
+          hasStrokeWidth = true;
+        }
       } while (
-        !idElem.hasAttr("id", id) &&
+        idElem.attributes.id !== id &&
         !hasStrokeWidth &&
         (idElem = idElem.parentNode)
       );

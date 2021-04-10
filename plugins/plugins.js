@@ -12,6 +12,7 @@ export * as convertPathData from "./convertPathData.js";
 export * as convertShapeToPath from "./convertShapeToPath.js";
 export * as convertStyleToAttrs from "./convertStyleToAttrs.js";
 export * as convertTransform from "./convertTransform.js";
+export * as mergeStyles from "./mergeStyles.js";
 export * as inlineStyles from "./inlineStyles.js";
 export * as mergePaths from "./mergePaths.js";
 export * as minifyStyles from "./minifyStyles.js";

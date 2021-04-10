@@ -16,8 +16,10 @@ export const description = "removes raster images (disabled by default)";
  */
 export function fn(item) {
   if (
-    item.isElem("image") &&
-    item.hasAttrLocal("href", /(\.|image\/)(jpg|png|gif)/)
+    item.type === "element" &&
+    item.name === "image" &&
+    item.attributes["xlink:href"] != null &&
+    /(\.|image\/)(jpg|png|gif)/.test(item.attributes["xlink:href"])
   ) {
     return false;
   }
