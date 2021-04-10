@@ -4,10 +4,8 @@ import { js2path, path2js } from "./_path.js";
 import { applyTransforms } from "./_applyTransforms.js";
 import { cleanupOutData } from "../lib/svgo/tools.js";
 
-export const type = "perItem";
-
+export const type = "visitor";
 export const active = true;
-
 export const description =
   "optimizes path data: writes in shorter form, applies transformations";
 
@@ -54,62 +52,65 @@ let arcTolerance;
  *
  * @author Kir Belevich
  */
-export function fn(item, params) {
-  if (
-    item.type === "element" &&
-    pathElems.includes(item.name) &&
-    item.attributes.d != null
-  ) {
-    const computedStyle = computeStyle(item);
-    precision = params.floatPrecision;
-    error = precision !== false
-      ? +Math.pow(0.1, precision).toFixed(precision)
-      : 1e-2;
-    roundData = precision > 0 && precision < 20 ? strongRound : round;
-    if (params.makeArcs) {
-      arcThreshold = params.makeArcs.threshold;
-      arcTolerance = params.makeArcs.tolerance;
-    }
-    const hasMarkerMid = computedStyle["marker-mid"] != null;
+export function fn(root, params) {
+  return {
+    element: {
+      enter: (node) => {
+        if (pathElems.includes(node.name) && node.attributes.d != null) {
+          const computedStyle = computeStyle(node);
+          precision = params.floatPrecision;
+          error = precision !== false
+            ? +Math.pow(0.1, precision).toFixed(precision)
+            : 1e-2;
+          roundData = precision > 0 && precision < 20 ? strongRound : round;
+          if (params.makeArcs) {
+            arcThreshold = params.makeArcs.threshold;
+            arcTolerance = params.makeArcs.tolerance;
+          }
+          const hasMarkerMid = computedStyle["marker-mid"] != null;
 
-    const maybeHasStroke = computedStyle.stroke &&
-      (computedStyle.stroke.type === "dynamic" ||
-        computedStyle.stroke.value !== "none");
-    const maybeHasLinecap = computedStyle["stroke-linecap"] &&
-      (computedStyle["stroke-linecap"].type === "dynamic" ||
-        computedStyle["stroke-linecap"].value !== "butt");
-    const maybeHasStrokeAndLinecap = maybeHasStroke && maybeHasLinecap;
+          const maybeHasStroke = computedStyle.stroke &&
+            (computedStyle.stroke.type === "dynamic" ||
+              computedStyle.stroke.value !== "none");
+          const maybeHasLinecap = computedStyle["stroke-linecap"] &&
+            (computedStyle["stroke-linecap"].type === "dynamic" ||
+              computedStyle["stroke-linecap"].value !== "butt");
+          const maybeHasStrokeAndLinecap = maybeHasStroke && maybeHasLinecap;
 
-    var data = path2js(item);
+          var data = path2js(node);
 
-    // TODO: get rid of functions returns
-    if (data.length) {
-      if (params.applyTransforms) {
-        applyTransforms(item, data, params);
-      }
+          // TODO: get rid of functions returns
+          if (data.length) {
+            if (params.applyTransforms) {
+              applyTransforms(node, data, params);
+            }
 
-      convertToRelative(data);
+            convertToRelative(data);
 
-      data = filters(data, params, {
-        maybeHasStrokeAndLinecap,
-        hasMarkerMid,
-      });
+            data = filters(data, params, {
+              maybeHasStrokeAndLinecap,
+              hasMarkerMid,
+            });
 
-      if (params.utilizeAbsolute) {
-        data = convertToMixed(data, params);
-      }
+            if (params.utilizeAbsolute) {
+              data = convertToMixed(data, params);
+            }
 
-      js2path(item, data, params);
-    }
-  }
-} /**
+            js2path(node, data, params);
+          }
+        }
+      },
+    },
+  };
+}
+
+/**
  * Convert absolute path data coordinates to relative.
  *
  * @param {Array} path input path data
  * @param {Object} params plugin params
  * @return {Array} output path data
  */
-
 const convertToRelative = (pathData) => {
   let start = [0, 0];
   let cursor = [0, 0];
