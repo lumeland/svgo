@@ -1,5 +1,6 @@
 import { assertEquals } from "../../deps/asserts.js";
-import { dirname, EOL } from "../../deps.js";
+import { dirname } from "../../deps/path.js";
+import { EOL } from "../../deps.js";
 import { optimize } from "../../mod.js";
 
 const regEOL = new RegExp(EOL, "g");
