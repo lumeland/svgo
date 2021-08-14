@@ -1,7 +1,7 @@
-export const type = "perItem";
+import { detachNodeFromParent } from "../lib/xast.js";
 
+export const type = "visitor";
 export const active = false;
-
 export const description = "removes <script> elements (disabled by default)";
 
 /**
@@ -9,11 +9,17 @@ export const description = "removes <script> elements (disabled by default)";
  *
  * https://www.w3.org/TR/SVG11/script.html
  *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
  *
  * @author Patrick Klingemann
  */
-export function fn(item) {
-  return !item.isElem("script");
+export function fn() {
+  return {
+    element: {
+      enter: (node, parentNode) => {
+        if (node.name === "script") {
+          detachNodeFromParent(node, parentNode);
+        }
+      },
+    },
+  };
 }

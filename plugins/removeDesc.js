@@ -1,14 +1,10 @@
-export const type = "perItem";
+import { detachNodeFromParent } from "../lib/xast.js";
 
+export const type = "visitor";
 export const active = true;
-
-export const params = {
-  removeAny: true,
-};
-
 export const description = "removes <desc>";
 
-var standardDescs = /^(Created with|Created using)/;
+const standardDescs = /^(Created with|Created using)/;
 
 /**
  * Removes <desc>.
@@ -17,19 +13,24 @@ var standardDescs = /^(Created with|Created using)/;
  *
  * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc
  *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
- *
  * @author Daniel Wabyick
  */
-export function fn(item, params) {
-  return (
-    !item.isElem("desc") ||
-    !(
-      params.removeAny ||
-      item.children.length === 0 ||
-      (item.children[0].type === "text" &&
-        standardDescs.test(item.children[0].value))
-    )
-  );
+export function fn(root, params) {
+  const { removeAny = true } = params;
+  return {
+    element: {
+      enter: (node, parentNode) => {
+        if (node.name === "desc") {
+          if (
+            removeAny ||
+            node.children.length === 0 ||
+            (node.children[0].type === "text" &&
+              standardDescs.test(node.children[0].value))
+          ) {
+            detachNodeFromParent(node, parentNode);
+          }
+        }
+      },
+    },
+  };
 }

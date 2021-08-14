@@ -1,7 +1,7 @@
-export const type = "perItem";
+import { detachNodeFromParent } from "../lib/xast.js";
 
+export const type = "visitor";
 export const active = true;
-
 export const description = "removes doctype declaration";
 
 /**
@@ -24,13 +24,14 @@ export const description = "removes doctype declaration";
  *     <!-- an internal subset can be embedded here -->
  * ]>
  *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
- *
  * @author Kir Belevich
  */
-export function fn(item) {
-  if (item.type === "doctype") {
-    return false;
-  }
+export function fn() {
+  return {
+    doctype: {
+      enter: (node, parentNode) => {
+        detachNodeFromParent(node, parentNode);
+      },
+    },
+  };
 }

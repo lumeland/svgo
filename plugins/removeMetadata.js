@@ -1,7 +1,7 @@
-export const type = "perItem";
+import { detachNodeFromParent } from "../lib/xast.js";
 
+export const type = "visitor";
 export const active = true;
-
 export const description = "removes <metadata>";
 
 /**
@@ -9,11 +9,16 @@ export const description = "removes <metadata>";
  *
  * https://www.w3.org/TR/SVG11/metadata.html
  *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
- *
  * @author Kir Belevich
  */
-export function fn(item) {
-  return !item.isElem("metadata");
+export function fn() {
+  return {
+    element: {
+      enter: (node, parentNode) => {
+        if (node.name === "metadata") {
+          detachNodeFromParent(node, parentNode);
+        }
+      },
+    },
+  };
 }
