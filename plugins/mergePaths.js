@@ -86,7 +86,7 @@ export function fn(root, params) {
               floatPrecision,
               noSpaceAfterFlags,
             });
-            detachNodeFromParent(child);
+            detachNodeFromParent(child, node);
             continue;
           }
 

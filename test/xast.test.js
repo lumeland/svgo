@@ -92,10 +92,10 @@ Deno.test("skip entering children if node is detached", () => {
   const entered = [];
   visit(root, {
     element: {
-      enter: (node) => {
+      enter: (node, parentNode) => {
         entered.push(node.name);
         if (node.name === "g") {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
         }
       },
     },

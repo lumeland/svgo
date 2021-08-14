@@ -51,7 +51,7 @@ export function fn(root, params) {
 
   return {
     element: {
-      enter: (node) => {
+      enter: (node, parentNode) => {
         // Removes hidden elements
         // https://www.w3schools.com/cssref/pr_class_visibility.asp
         const computedStyle = computeStyle(stylesheet, node);
@@ -63,7 +63,7 @@ export function fn(root, params) {
           // keep if any descendant enables visibility
           querySelector(node, "[visibility=visible]") == null
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -80,7 +80,7 @@ export function fn(root, params) {
           // markers with display: none still rendered
           node.name !== "marker"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -95,7 +95,7 @@ export function fn(root, params) {
           // transparent element inside clipPath still affect clipped elements
           closestByName(node, "clipPath") == null
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -111,7 +111,7 @@ export function fn(root, params) {
           node.children.length === 0 &&
           node.attributes.r === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -127,7 +127,7 @@ export function fn(root, params) {
           node.children.length === 0 &&
           node.attributes.rx === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -143,7 +143,7 @@ export function fn(root, params) {
           node.children.length === 0 &&
           node.attributes.ry === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -159,7 +159,7 @@ export function fn(root, params) {
           node.children.length === 0 &&
           node.attributes.width === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -176,7 +176,7 @@ export function fn(root, params) {
           node.children.length === 0 &&
           node.attributes.height === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -191,7 +191,7 @@ export function fn(root, params) {
           node.name === "pattern" &&
           node.attributes.width === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -206,7 +206,7 @@ export function fn(root, params) {
           node.name === "pattern" &&
           node.attributes.height === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -221,7 +221,7 @@ export function fn(root, params) {
           node.name === "image" &&
           node.attributes.width === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -236,7 +236,7 @@ export function fn(root, params) {
           node.name === "image" &&
           node.attributes.height === "0"
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -247,12 +247,12 @@ export function fn(root, params) {
         // <path d=""/>
         if (pathEmptyD && node.name === "path") {
           if (node.attributes.d == null) {
-            detachNodeFromParent(node);
+            detachNodeFromParent(node, parentNode);
             return;
           }
           const pathData = parsePathData(node.attributes.d);
           if (pathData.length === 0) {
-            detachNodeFromParent(node);
+            detachNodeFromParent(node, parentNode);
             return;
           }
           // keep single point paths for markers
@@ -261,7 +261,7 @@ export function fn(root, params) {
             computedStyle["marker-start"] == null &&
             computedStyle["marker-end"] == null
           ) {
-            detachNodeFromParent(node);
+            detachNodeFromParent(node, parentNode);
             return;
           }
           return;
@@ -277,7 +277,7 @@ export function fn(root, params) {
           node.name === "polyline" &&
           node.attributes.points == null
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
 
@@ -291,7 +291,7 @@ export function fn(root, params) {
           node.name === "polygon" &&
           node.attributes.points == null
         ) {
-          detachNodeFromParent(node);
+          detachNodeFromParent(node, parentNode);
           return;
         }
       },
