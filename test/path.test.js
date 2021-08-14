@@ -150,17 +150,11 @@ Deno.test("should configure precision", () => {
     { command: "L", args: [100, 200] },
   ];
   assertEquals(
-    stringifyPathData({
-      pathData,
-      precision: 3,
-    }),
+    stringifyPathData({ pathData, precision: 3 }),
     "M0-1.988.3 3.142-.3-3.142 100 200",
   );
   assertEquals(
-    stringifyPathData({
-      pathData,
-      precision: 0,
-    }),
+    stringifyPathData({ pathData, precision: 0 }),
     "M0-2 0 3 0-3 100 200",
   );
 });
@@ -169,19 +163,14 @@ Deno.test("allows to avoid spaces after arc flags", () => {
     { command: "M", args: [0, 0] },
     { command: "A", args: [50, 50, 10, 1, 0, 0.2, 20] },
     { command: "a", args: [50, 50, 10, 1, 0, 0.2, 20] },
+    { command: "a", args: [50, 50, 10, 1, 0, 0.2, 20] },
   ];
   assertEquals(
-    stringifyPathData({
-      pathData,
-      disableSpaceAfterFlags: false,
-    }),
-    "M0 0A50 50 10 1 0 .2 20a50 50 10 1 0 .2 20",
+    stringifyPathData({ pathData, disableSpaceAfterFlags: false }),
+    "M0 0A50 50 10 1 0 .2 20a50 50 10 1 0 .2 20 50 50 10 1 0 .2 20",
   );
   assertEquals(
-    stringifyPathData({
-      pathData,
-      disableSpaceAfterFlags: true,
-    }),
-    "M0 0A50 50 10 10.2 20a50 50 10 10.2 20",
+    stringifyPathData({ pathData, disableSpaceAfterFlags: true }),
+    "M0 0A50 50 10 10.2 20a50 50 10 10.2 20 50 50 10 10.2 20",
   );
 });
