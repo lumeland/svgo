@@ -1,5 +1,5 @@
 import { equal } from "../deps/asserts.js";
-import { computeStyle } from "../lib/style.js";
+import { collectStylesheet, computeStyle } from "../lib/style.js";
 import { querySelector } from "../lib/xast.js";
 import svg2js from "../lib/svgo/svg2js.js";
 
@@ -28,28 +28,26 @@ Deno.test("collects styles", () => {
         </style>
       </svg>
     `);
-  equal(computeStyle(querySelector(root, "#class")), {
+  const stylesheet = collectStylesheet(root);
+  equal(computeStyle(stylesheet, querySelector(root, "#class")), {
     fill: { type: "static", inherited: false, value: "red" },
   });
-  equal(computeStyle(querySelector(root, "#two-classes")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#two-classes")), {
     fill: { type: "static", inherited: false, value: "green" },
     stroke: { type: "static", inherited: false, value: "black" },
   });
-  equal(computeStyle(querySelector(root, "#attribute")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#attribute")), {
     fill: { type: "static", inherited: false, value: "purple" },
   });
-  equal(computeStyle(querySelector(root, "#inline-style")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#inline-style")), {
     fill: { type: "static", inherited: false, value: "grey" },
   });
-  equal(computeStyle(querySelector(root, "#inheritance")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#inheritance")), {
     fill: { type: "static", inherited: true, value: "yellow" },
   });
-  equal(
-    computeStyle(querySelector(root, "#nested-inheritance")),
-    {
-      fill: { type: "static", inherited: true, value: "blue" },
-    },
-  );
+  equal(computeStyle(stylesheet, querySelector(root, "#nested-inheritance")), {
+    fill: { type: "static", inherited: true, value: "blue" },
+  });
 });
 
 Deno.test("prioritizes different kinds of styles", () => {
@@ -68,29 +66,27 @@ Deno.test("prioritizes different kinds of styles", () => {
         </g>
       </svg>
     `);
+  const stylesheet = collectStylesheet(root);
+  equal(computeStyle(stylesheet, querySelector(root, "#complex-selector")), {
+    fill: { type: "static", inherited: false, value: "red" },
+  });
   equal(
-    computeStyle(querySelector(root, "#complex-selector")),
-    {
-      fill: { type: "static", inherited: false, value: "red" },
-    },
+    computeStyle(
+      stylesheet,
+      querySelector(root, "#attribute-over-inheritance"),
+    ),
+    { fill: { type: "static", inherited: false, value: "orange" } },
   );
   equal(
-    computeStyle(querySelector(root, "#attribute-over-inheritance")),
-    {
-      fill: { type: "static", inherited: false, value: "orange" },
-    },
+    computeStyle(stylesheet, querySelector(root, "#style-rule-over-attribute")),
+    { fill: { type: "static", inherited: false, value: "blue" } },
   );
   equal(
-    computeStyle(querySelector(root, "#style-rule-over-attribute")),
-    {
-      fill: { type: "static", inherited: false, value: "blue" },
-    },
-  );
-  equal(
-    computeStyle(querySelector(root, "#inline-style-over-style-rule")),
-    {
-      fill: { type: "static", inherited: false, value: "purple" },
-    },
+    computeStyle(
+      stylesheet,
+      querySelector(root, "#inline-style-over-style-rule"),
+    ),
+    { fill: { type: "static", inherited: false, value: "purple" } },
   );
 });
 
@@ -106,23 +102,24 @@ Deno.test("prioritizes important styles", () => {
         <rect id="inline-style-over-style-rule" style="fill: purple !important;" class="b" />
       </svg>
     `);
+  const stylesheet = collectStylesheet(root);
   equal(
-    computeStyle(querySelector(root, "#complex-selector")),
-    {
-      fill: { type: "static", inherited: false, value: "green" },
-    },
+    computeStyle(stylesheet, querySelector(root, "#complex-selector")),
+    { fill: { type: "static", inherited: false, value: "green" } },
   );
   equal(
-    computeStyle(querySelector(root, "#style-rule-over-inline-style")),
-    {
-      fill: { type: "static", inherited: false, value: "green" },
-    },
+    computeStyle(
+      stylesheet,
+      querySelector(root, "#style-rule-over-inline-style"),
+    ),
+    { fill: { type: "static", inherited: false, value: "green" } },
   );
   equal(
-    computeStyle(querySelector(root, "#inline-style-over-style-rule")),
-    {
-      fill: { type: "static", inherited: false, value: "purple" },
-    },
+    computeStyle(
+      stylesheet,
+      querySelector(root, "#inline-style-over-style-rule"),
+    ),
+    { fill: { type: "static", inherited: false, value: "purple" } },
   );
 });
 
@@ -146,22 +143,20 @@ Deno.test("treats at-rules and pseudo-classes as dynamic styles", () => {
         <rect id="static" class="c" style="fill: black" />
       </svg>
     `);
-  equal(computeStyle(querySelector(root, "#media-query")), {
+  const stylesheet = collectStylesheet(root);
+  equal(computeStyle(stylesheet, querySelector(root, "#media-query")), {
     fill: { type: "dynamic", inherited: false },
   });
-  equal(computeStyle(querySelector(root, "#hover")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#hover")), {
     fill: { type: "dynamic", inherited: false },
   });
-  equal(computeStyle(querySelector(root, "#inherited")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#inherited")), {
     fill: { type: "dynamic", inherited: true },
   });
-  equal(
-    computeStyle(querySelector(root, "#inherited-overriden")),
-    {
-      fill: { type: "static", inherited: false, value: "blue" },
-    },
-  );
-  equal(computeStyle(querySelector(root, "#static")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#inherited-overriden")), {
+    fill: { type: "static", inherited: false, value: "blue" },
+  });
+  equal(computeStyle(stylesheet, querySelector(root, "#static")), {
     fill: { type: "static", inherited: false, value: "black" },
   });
 });
@@ -183,13 +178,14 @@ Deno.test("considers <style> media attribute", () => {
         <rect id="static" class="c" />
       </svg>
     `);
-  equal(computeStyle(querySelector(root, "#media-query")), {
+  const stylesheet = collectStylesheet(root);
+  equal(computeStyle(stylesheet, querySelector(root, "#media-query")), {
     fill: { type: "dynamic", inherited: false },
   });
-  equal(computeStyle(querySelector(root, "#kinda-static")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#kinda-static")), {
     fill: { type: "dynamic", inherited: false },
   });
-  equal(computeStyle(querySelector(root, "#static")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#static")), {
     fill: { type: "static", inherited: false, value: "blue" },
   });
 });
@@ -211,13 +207,14 @@ Deno.test("ignores <style> with invalid type", () => {
         <rect id="invalid-type" class="c" />
       </svg>
     `);
-  equal(computeStyle(querySelector(root, "#valid-type")), {
+  const stylesheet = collectStylesheet(root);
+  equal(computeStyle(stylesheet, querySelector(root, "#valid-type")), {
     fill: { type: "static", inherited: false, value: "red" },
   });
-  equal(computeStyle(querySelector(root, "#empty-type")), {
+  equal(computeStyle(stylesheet, querySelector(root, "#empty-type")), {
     fill: { type: "static", inherited: false, value: "green" },
   });
-  equal(computeStyle(querySelector(root, "#invalid-type")), {});
+  equal(computeStyle(stylesheet, querySelector(root, "#invalid-type")), {});
 });
 
 Deno.test("ignores keyframes atrule", () => {
@@ -242,7 +239,8 @@ Deno.test("ignores keyframes atrule", () => {
         <rect id="element" class="a" />
       </svg>
     `);
-  equal(computeStyle(querySelector(root, "#element")), {
+  const stylesheet = collectStylesheet(root);
+  equal(computeStyle(stylesheet, querySelector(root, "#element")), {
     animation: {
       type: "static",
       inherited: false,

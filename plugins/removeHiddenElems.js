@@ -3,7 +3,7 @@ import {
   detachNodeFromParent,
   querySelector,
 } from "../lib/xast.js";
-import { computeStyle } from "../lib/style.js";
+import { collectStylesheet, computeStyle } from "../lib/style.js";
 import { parsePathData } from "../lib/path.js";
 
 export const type = "visitor";
@@ -47,12 +47,14 @@ export function fn(root, params) {
     polylineEmptyPoints = true,
     polygonEmptyPoints = true,
   } = params;
+  const stylesheet = collectStylesheet(root);
+
   return {
     element: {
       enter: (node) => {
         // Removes hidden elements
         // https://www.w3schools.com/cssref/pr_class_visibility.asp
-        const computedStyle = computeStyle(node);
+        const computedStyle = computeStyle(stylesheet, node);
         if (
           isHidden &&
           computedStyle.visibility &&

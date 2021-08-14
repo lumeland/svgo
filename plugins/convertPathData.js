@@ -1,4 +1,4 @@
-import { computeStyle } from "../lib/style.js";
+import { collectStylesheet, computeStyle } from "../lib/style.js";
 import { pathElems } from "./_collections.js";
 import { js2path, path2js } from "./_path.js";
 import { applyTransforms } from "./_applyTransforms.js";
@@ -53,11 +53,12 @@ let arcTolerance;
  * @author Kir Belevich
  */
 export function fn(root, params) {
+  const stylesheet = collectStylesheet(root);
   return {
     element: {
       enter: (node) => {
         if (pathElems.includes(node.name) && node.attributes.d != null) {
-          const computedStyle = computeStyle(node);
+          const computedStyle = computeStyle(stylesheet, node);
           precision = params.floatPrecision;
           error = precision !== false
             ? +Math.pow(0.1, precision).toFixed(precision)

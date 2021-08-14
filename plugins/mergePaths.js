@@ -1,5 +1,5 @@
 import { detachNodeFromParent } from "../lib/xast.js";
-import { computeStyle } from "../lib/style.js";
+import { collectStylesheet, computeStyle } from "../lib/style.js";
 import { intersects, js2path, path2js } from "./_path.js";
 
 export const type = "visitor";
@@ -20,6 +20,7 @@ export function fn(root, params) {
     floatPrecision,
     noSpaceAfterFlags = false, // a20 60 45 0 1 30 20 → a20 60 45 0130 20
   } = params;
+  const stylesheet = collectStylesheet(root);
 
   return {
     element: {
@@ -51,7 +52,7 @@ export function fn(root, params) {
           }
 
           // preserve paths with markers
-          const computedStyle = computeStyle(child);
+          const computedStyle = computeStyle(stylesheet, child);
           if (
             computedStyle["marker-start"] ||
             computedStyle["marker-mid"] ||
