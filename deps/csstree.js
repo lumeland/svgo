@@ -6776,8 +6776,8 @@ var intToCharMap =
   );
 
 /**
-  * Encode an integer in the range of 0 to 63 to a single base 64 digit.
-  */
+ * Encode an integer in the range of 0 to 63 to a single base 64 digit.
+ */
 var encode = function (number) {
   if (0 <= number && number < intToCharMap.length) {
     return intToCharMap[number];
@@ -6786,9 +6786,9 @@ var encode = function (number) {
 };
 
 /**
-  * Decode a single base 64 character code digit to an integer. Returns -1 on
-  * failure.
-  */
+ * Decode a single base 64 character code digit to an integer. Returns -1 on
+ * failure.
+ */
 var decode = function (charCode) {
   var bigA = 65; // 'A'
   var bigZ = 90; // 'Z'
@@ -6900,21 +6900,21 @@ var VLQ_BASE_MASK = VLQ_BASE - 1;
 var VLQ_CONTINUATION_BIT = VLQ_BASE;
 
 /**
-  * Converts from a two-complement value to a value where the sign bit is
-  * placed in the least significant bit.  For example, as decimals:
-  *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
-  *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
-  */
+ * Converts from a two-complement value to a value where the sign bit is
+ * placed in the least significant bit.  For example, as decimals:
+ *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
+ *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
+ */
 function toVLQSigned(aValue) {
   return aValue < 0 ? ((-aValue) << 1) + 1 : (aValue << 1) + 0;
 }
 
 /**
-  * Converts to a two-complement value from a value where the sign bit is
-  * placed in the least significant bit.  For example, as decimals:
-  *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
-  *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
-  */
+ * Converts to a two-complement value from a value where the sign bit is
+ * placed in the least significant bit.  For example, as decimals:
+ *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
+ *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
+ */
 function fromVLQSigned(aValue) {
   var isNegative = (aValue & 1) === 1;
   var shifted = aValue >> 1;
@@ -6922,8 +6922,8 @@ function fromVLQSigned(aValue) {
 }
 
 /**
-  * Returns the base 64 VLQ encoded value.
-  */
+ * Returns the base 64 VLQ encoded value.
+ */
 var encode$1 = function base64VLQ_encode(aValue) {
   var encoded = "";
   var digit;
@@ -6945,9 +6945,9 @@ var encode$1 = function base64VLQ_encode(aValue) {
 };
 
 /**
-  * Decodes the next base 64 VLQ value from the given string and returns the
-  * value and the rest of the string via the out parameter.
-  */
+ * Decodes the next base 64 VLQ value from the given string and returns the
+ * value and the rest of the string via the out parameter.
+ */
 var decode$1 = function base64VLQ_decode(aStr, aIndex, aOutParam) {
   var strLen = aStr.length;
   var result = 0;
@@ -6996,15 +6996,15 @@ var util = createCommonjsModule(function (module, exports) {
   */
 
   /**
-  * This is a helper function for getting values from parameter/options
-  * objects.
-  *
-  * @param args The object we are extracting values from
-  * @param name The name of the property we are getting.
-  * @param defaultValue An optional value to return if the property is missing
-  * from the object. If this is not specified and the property is missing, an
-  * error will be thrown.
-  */
+   * This is a helper function for getting values from parameter/options
+   * objects.
+   *
+   * @param args The object we are extracting values from
+   * @param name The name of the property we are getting.
+   * @param defaultValue An optional value to return if the property is missing
+   * from the object. If this is not specified and the property is missing, an
+   * error will be thrown.
+   */
   function getArg(aArgs, aName, aDefaultValue) {
     if (aName in aArgs) {
       return aArgs[aName];
@@ -7058,16 +7058,16 @@ var util = createCommonjsModule(function (module, exports) {
   exports.urlGenerate = urlGenerate;
 
   /**
-  * Normalizes a path, or the path portion of a URL:
-  *
-  * - Replaces consecutive slashes with one slash.
-  * - Removes unnecessary '.' parts.
-  * - Removes unnecessary '<dir>/..' parts.
-  *
-  * Based on code in the Node.js 'path' core module.
-  *
-  * @param aPath The path or url to normalize.
-  */
+   * Normalizes a path, or the path portion of a URL:
+   *
+   * - Replaces consecutive slashes with one slash.
+   * - Removes unnecessary '.' parts.
+   * - Removes unnecessary '<dir>/..' parts.
+   *
+   * Based on code in the Node.js 'path' core module.
+   *
+   * @param aPath The path or url to normalize.
+   */
   function normalize(aPath) {
     var path = aPath;
     var url = urlParse(aPath);
@@ -7114,21 +7114,21 @@ var util = createCommonjsModule(function (module, exports) {
   exports.normalize = normalize;
 
   /**
-  * Joins two paths/URLs.
-  *
-  * @param aRoot The root path or URL.
-  * @param aPath The path or URL to be joined with the root.
-  *
-  * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
-  *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
-  *   first.
-  * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
-  *   is updated with the result and aRoot is returned. Otherwise the result
-  *   is returned.
-  *   - If aPath is absolute, the result is aPath.
-  *   - Otherwise the two paths are joined with a slash.
-  * - Joining for example 'http://' and 'www.example.com' is also supported.
-  */
+   * Joins two paths/URLs.
+   *
+   * @param aRoot The root path or URL.
+   * @param aPath The path or URL to be joined with the root.
+   *
+   * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
+   *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
+   *   first.
+   * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
+   *   is updated with the result and aRoot is returned. Otherwise the result
+   *   is returned.
+   *   - If aPath is absolute, the result is aPath.
+   *   - Otherwise the two paths are joined with a slash.
+   * - Joining for example 'http://' and 'www.example.com' is also supported.
+   */
   function join(aRoot, aPath) {
     if (aRoot === "") {
       aRoot = ".";
@@ -7177,11 +7177,11 @@ var util = createCommonjsModule(function (module, exports) {
   };
 
   /**
-  * Make a path relative to a URL or another path.
-  *
-  * @param aRoot The root path or URL.
-  * @param aPath The path or URL to be made relative to aRoot.
-  */
+   * Make a path relative to a URL or another path.
+   *
+   * @param aRoot The root path or URL.
+   * @param aPath The path or URL to be made relative to aRoot.
+   */
   function relative(aRoot, aPath) {
     if (aRoot === "") {
       aRoot = ".";
@@ -7226,14 +7226,14 @@ var util = createCommonjsModule(function (module, exports) {
   }
 
   /**
-  * Because behavior goes wacky when you set `__proto__` on objects, we
-  * have to prefix all the strings in our set with an arbitrary character.
-  *
-  * See https://github.com/mozilla/source-map/pull/31 and
-  * https://github.com/mozilla/source-map/issues/30
-  *
-  * @param String aStr
-  */
+   * Because behavior goes wacky when you set `__proto__` on objects, we
+   * have to prefix all the strings in our set with an arbitrary character.
+   *
+   * See https://github.com/mozilla/source-map/pull/31 and
+   * https://github.com/mozilla/source-map/issues/30
+   *
+   * @param String aStr
+   */
   function toSetString(aStr) {
     if (isProtoString(aStr)) {
       return "$" + aStr;
@@ -7287,13 +7287,13 @@ var util = createCommonjsModule(function (module, exports) {
   }
 
   /**
-  * Comparator between two mappings where the original positions are compared.
-  *
-  * Optionally pass in `true` as `onlyCompareGenerated` to consider two
-  * mappings with the same original source/line/column, but different generated
-  * line and column the same. Useful when searching for a mapping with a
-  * stubbed out mapping.
-  */
+   * Comparator between two mappings where the original positions are compared.
+   *
+   * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+   * mappings with the same original source/line/column, but different generated
+   * line and column the same. Useful when searching for a mapping with a
+   * stubbed out mapping.
+   */
   function compareByOriginalPositions(
     mappingA,
     mappingB,
@@ -7329,14 +7329,14 @@ var util = createCommonjsModule(function (module, exports) {
   exports.compareByOriginalPositions = compareByOriginalPositions;
 
   /**
-  * Comparator between two mappings with deflated source and name indices where
-  * the generated positions are compared.
-  *
-  * Optionally pass in `true` as `onlyCompareGenerated` to consider two
-  * mappings with the same generated line and column, but different
-  * source/name/original line and column the same. Useful when searching for a
-  * mapping with a stubbed out mapping.
-  */
+   * Comparator between two mappings with deflated source and name indices where
+   * the generated positions are compared.
+   *
+   * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+   * mappings with the same generated line and column, but different
+   * source/name/original line and column the same. Useful when searching for a
+   * mapping with a stubbed out mapping.
+   */
   function compareByGeneratedPositionsDeflated(
     mappingA,
     mappingB,
@@ -7393,9 +7393,9 @@ var util = createCommonjsModule(function (module, exports) {
   }
 
   /**
-  * Comparator between two mappings with inflated source and name strings where
-  * the generated positions are compared.
-  */
+   * Comparator between two mappings with inflated source and name strings where
+   * the generated positions are compared.
+   */
   function compareByGeneratedPositionsInflated(mappingA, mappingB) {
     var cmp = mappingA.generatedLine - mappingB.generatedLine;
     if (cmp !== 0) {
@@ -7428,19 +7428,19 @@ var util = createCommonjsModule(function (module, exports) {
     compareByGeneratedPositionsInflated;
 
   /**
-  * Strip any JSON XSSI avoidance prefix from the string (as documented
-  * in the source maps specification), and then parse the string as
-  * JSON.
-  */
+   * Strip any JSON XSSI avoidance prefix from the string (as documented
+   * in the source maps specification), and then parse the string as
+   * JSON.
+   */
   function parseSourceMapInput(str) {
     return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ""));
   }
   exports.parseSourceMapInput = parseSourceMapInput;
 
   /**
-  * Compute the URL of a source given the the source root, the source's
-  * URL, and the source map's URL.
-  */
+   * Compute the URL of a source given the the source root, the source's
+   * URL, and the source map's URL.
+   */
   function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
     sourceURL = sourceURL || "";
 
@@ -7518,19 +7518,19 @@ var has = Object.prototype.hasOwnProperty;
 var hasNativeMap = typeof Map !== "undefined";
 
 /**
-  * A data structure which is a combination of an array and a set. Adding a new
-  * member is O(1), testing for membership is O(1), and finding the index of an
-  * element is O(1). Removing elements from the set is not supported. Only
-  * strings are supported for membership.
-  */
+ * A data structure which is a combination of an array and a set. Adding a new
+ * member is O(1), testing for membership is O(1), and finding the index of an
+ * element is O(1). Removing elements from the set is not supported. Only
+ * strings are supported for membership.
+ */
 function ArraySet() {
   this._array = [];
   this._set = hasNativeMap ? new Map() : Object.create(null);
 }
 
 /**
-  * Static method for creating ArraySet instances from an existing array.
-  */
+ * Static method for creating ArraySet instances from an existing array.
+ */
 ArraySet.fromArray = function ArraySet_fromArray(aArray, aAllowDuplicates) {
   var set = new ArraySet();
   for (var i = 0, len = aArray.length; i < len; i++) {
@@ -7540,11 +7540,11 @@ ArraySet.fromArray = function ArraySet_fromArray(aArray, aAllowDuplicates) {
 };
 
 /**
-  * Return how many unique items are in this ArraySet. If duplicates have been
-  * added, than those do not count towards the size.
-  *
-  * @returns Number
-  */
+ * Return how many unique items are in this ArraySet. If duplicates have been
+ * added, than those do not count towards the size.
+ *
+ * @returns Number
+ */
 ArraySet.prototype.size = function ArraySet_size() {
   return hasNativeMap
     ? this._set.size
@@ -7552,10 +7552,10 @@ ArraySet.prototype.size = function ArraySet_size() {
 };
 
 /**
-  * Add the given string to this set.
-  *
-  * @param String aStr
-  */
+ * Add the given string to this set.
+ *
+ * @param String aStr
+ */
 ArraySet.prototype.add = function ArraySet_add(aStr, aAllowDuplicates) {
   var sStr = hasNativeMap ? aStr : util.toSetString(aStr);
   var isDuplicate = hasNativeMap ? this.has(aStr) : has.call(this._set, sStr);
@@ -7573,10 +7573,10 @@ ArraySet.prototype.add = function ArraySet_add(aStr, aAllowDuplicates) {
 };
 
 /**
-  * Is the given string a member of this set?
-  *
-  * @param String aStr
-  */
+ * Is the given string a member of this set?
+ *
+ * @param String aStr
+ */
 ArraySet.prototype.has = function ArraySet_has(aStr) {
   if (hasNativeMap) {
     return this._set.has(aStr);
@@ -7587,10 +7587,10 @@ ArraySet.prototype.has = function ArraySet_has(aStr) {
 };
 
 /**
-  * What is the index of the given string in the array?
-  *
-  * @param String aStr
-  */
+ * What is the index of the given string in the array?
+ *
+ * @param String aStr
+ */
 ArraySet.prototype.indexOf = function ArraySet_indexOf(aStr) {
   if (hasNativeMap) {
     var idx = this._set.get(aStr);
@@ -7608,10 +7608,10 @@ ArraySet.prototype.indexOf = function ArraySet_indexOf(aStr) {
 };
 
 /**
-  * What is the element at the given index?
-  *
-  * @param Number aIdx
-  */
+ * What is the element at the given index?
+ *
+ * @param Number aIdx
+ */
 ArraySet.prototype.at = function ArraySet_at(aIdx) {
   if (aIdx >= 0 && aIdx < this._array.length) {
     return this._array[aIdx];
@@ -7620,10 +7620,10 @@ ArraySet.prototype.at = function ArraySet_at(aIdx) {
 };
 
 /**
-  * Returns the array representation of this set (which has the proper indices
-  * indicated by indexOf). Note that this is a copy of the internal array used
-  * for storing the members so that no one can mess with internal state.
-  */
+ * Returns the array representation of this set (which has the proper indices
+ * indicated by indexOf). Note that this is a copy of the internal array used
+ * for storing the members so that no one can mess with internal state.
+ */
 ArraySet.prototype.toArray = function ArraySet_toArray() {
   return this._array.slice();
 };
@@ -7642,9 +7642,9 @@ var arraySet = {
   */
 
 /**
-  * Determine whether mappingB is after mappingA with respect to generated
-  * position.
-  */
+ * Determine whether mappingB is after mappingA with respect to generated
+ * position.
+ */
 function generatedPositionAfter(mappingA, mappingB) {
   // Optimized for most common case
   var lineA = mappingA.generatedLine;
@@ -7656,10 +7656,10 @@ function generatedPositionAfter(mappingA, mappingB) {
 }
 
 /**
-  * A data structure to provide a sorted view of accumulated mappings in a
-  * performance conscious manner. It trades a neglibable overhead in general
-  * case for a large speedup in case of mappings being added in order.
-  */
+ * A data structure to provide a sorted view of accumulated mappings in a
+ * performance conscious manner. It trades a neglibable overhead in general
+ * case for a large speedup in case of mappings being added in order.
+ */
 function MappingList() {
   this._array = [];
   this._sorted = true;
@@ -7668,11 +7668,11 @@ function MappingList() {
 }
 
 /**
-  * Iterate through internal items. This method takes the same arguments that
-  * `Array.prototype.forEach` takes.
-  *
-  * NOTE: The order of the mappings is NOT guaranteed.
-  */
+ * Iterate through internal items. This method takes the same arguments that
+ * `Array.prototype.forEach` takes.
+ *
+ * NOTE: The order of the mappings is NOT guaranteed.
+ */
 MappingList.prototype.unsortedForEach = function MappingList_forEach(
   aCallback,
   aThisArg,
@@ -7681,10 +7681,10 @@ MappingList.prototype.unsortedForEach = function MappingList_forEach(
 };
 
 /**
-  * Add the given source mapping.
-  *
-  * @param Object aMapping
-  */
+ * Add the given source mapping.
+ *
+ * @param Object aMapping
+ */
 MappingList.prototype.add = function MappingList_add(aMapping) {
   if (generatedPositionAfter(this._last, aMapping)) {
     this._last = aMapping;
@@ -7696,14 +7696,14 @@ MappingList.prototype.add = function MappingList_add(aMapping) {
 };
 
 /**
-  * Returns the flat, sorted array of mappings. The mappings are sorted by
-  * generated position.
-  *
-  * WARNING: This method returns internal data without copying, for
-  * performance. The return value must NOT be mutated, and should be treated as
-  * an immutable borrow. If you want to take ownership, you must make your own
-  * copy.
-  */
+ * Returns the flat, sorted array of mappings. The mappings are sorted by
+ * generated position.
+ *
+ * WARNING: This method returns internal data without copying, for
+ * performance. The return value must NOT be mutated, and should be treated as
+ * an immutable borrow. If you want to take ownership, you must make your own
+ * copy.
+ */
 MappingList.prototype.toArray = function MappingList_toArray() {
   if (!this._sorted) {
     this._array.sort(util.compareByGeneratedPositionsInflated);
@@ -7729,13 +7729,13 @@ var ArraySet$1 = arraySet.ArraySet;
 var MappingList$1 = mappingList.MappingList;
 
 /**
-  * An instance of the SourceMapGenerator represents a source map which is
-  * being built incrementally. You may pass an object with the following
-  * properties:
-  *
-  *   - file: The filename of the generated source.
-  *   - sourceRoot: A root for all relative URLs in this source map.
-  */
+ * An instance of the SourceMapGenerator represents a source map which is
+ * being built incrementally. You may pass an object with the following
+ * properties:
+ *
+ *   - file: The filename of the generated source.
+ *   - sourceRoot: A root for all relative URLs in this source map.
+ */
 function SourceMapGenerator(aArgs) {
   if (!aArgs) {
     aArgs = {};
@@ -7752,10 +7752,10 @@ function SourceMapGenerator(aArgs) {
 SourceMapGenerator.prototype._version = 3;
 
 /**
-  * Creates a new SourceMapGenerator based on a SourceMapConsumer
-  *
-  * @param aSourceMapConsumer The SourceMap.
-  */
+ * Creates a new SourceMapGenerator based on a SourceMapConsumer
+ *
+ * @param aSourceMapConsumer The SourceMap.
+ */
 SourceMapGenerator.fromSourceMap = function SourceMapGenerator_fromSourceMap(
   aSourceMapConsumer,
 ) {
@@ -7809,15 +7809,15 @@ SourceMapGenerator.fromSourceMap = function SourceMapGenerator_fromSourceMap(
 };
 
 /**
-  * Add a single mapping from original source line and column to the generated
-  * source's line and column for this source map being created. The mapping
-  * object should have the following properties:
-  *
-  *   - generated: An object with the generated line and column positions.
-  *   - original: An object with the original line and column positions.
-  *   - source: The original source file (relative to the sourceRoot).
-  *   - name: An optional original token name for this mapping.
-  */
+ * Add a single mapping from original source line and column to the generated
+ * source's line and column for this source map being created. The mapping
+ * object should have the following properties:
+ *
+ *   - generated: An object with the generated line and column positions.
+ *   - original: An object with the original line and column positions.
+ *   - source: The original source file (relative to the sourceRoot).
+ *   - name: An optional original token name for this mapping.
+ */
 SourceMapGenerator.prototype.addMapping =
   function SourceMapGenerator_addMapping(aArgs) {
     var generated = util.getArg(aArgs, "generated");
@@ -7854,8 +7854,8 @@ SourceMapGenerator.prototype.addMapping =
   };
 
 /**
-  * Set the source content for a source file.
-  */
+ * Set the source content for a source file.
+ */
 SourceMapGenerator.prototype.setSourceContent =
   function SourceMapGenerator_setSourceContent(
     aSourceFile,
@@ -7884,21 +7884,21 @@ SourceMapGenerator.prototype.setSourceContent =
   };
 
 /**
-  * Applies the mappings of a sub-source-map for a specific source file to the
-  * source map being generated. Each mapping to the supplied source file is
-  * rewritten using the supplied source map. Note: The resolution for the
-  * resulting mappings is the minimium of this map and the supplied map.
-  *
-  * @param aSourceMapConsumer The source map to be applied.
-  * @param aSourceFile Optional. The filename of the source file.
-  *        If omitted, SourceMapConsumer's file property will be used.
-  * @param aSourceMapPath Optional. The dirname of the path to the source map
-  *        to be applied. If relative, it is relative to the SourceMapConsumer.
-  *        This parameter is needed when the two source maps aren't in the same
-  *        directory, and the source map to be applied contains relative source
-  *        paths. If so, those relative source paths need to be rewritten
-  *        relative to the SourceMapGenerator.
-  */
+ * Applies the mappings of a sub-source-map for a specific source file to the
+ * source map being generated. Each mapping to the supplied source file is
+ * rewritten using the supplied source map. Note: The resolution for the
+ * resulting mappings is the minimium of this map and the supplied map.
+ *
+ * @param aSourceMapConsumer The source map to be applied.
+ * @param aSourceFile Optional. The filename of the source file.
+ *        If omitted, SourceMapConsumer's file property will be used.
+ * @param aSourceMapPath Optional. The dirname of the path to the source map
+ *        to be applied. If relative, it is relative to the SourceMapConsumer.
+ *        This parameter is needed when the two source maps aren't in the same
+ *        directory, and the source map to be applied contains relative source
+ *        paths. If so, those relative source paths need to be rewritten
+ *        relative to the SourceMapGenerator.
+ */
 SourceMapGenerator.prototype.applySourceMap =
   function SourceMapGenerator_applySourceMap(
     aSourceMapConsumer,
@@ -7980,16 +7980,16 @@ SourceMapGenerator.prototype.applySourceMap =
   };
 
 /**
-  * A mapping can have one of the three levels of data:
-  *
-  *   1. Just the generated position.
-  *   2. The Generated position, original position, and original source.
-  *   3. Generated and original position, original source, as well as a name
-  *      token.
-  *
-  * To maintain consistency, we validate that any new mapping being added falls
-  * in to one of these categories.
-  */
+ * A mapping can have one of the three levels of data:
+ *
+ *   1. Just the generated position.
+ *   2. The Generated position, original position, and original source.
+ *   3. Generated and original position, original source, as well as a name
+ *      token.
+ *
+ * To maintain consistency, we validate that any new mapping being added falls
+ * in to one of these categories.
+ */
 SourceMapGenerator.prototype._validateMapping =
   function SourceMapGenerator_validateMapping(
     aGenerated,
@@ -8041,9 +8041,9 @@ SourceMapGenerator.prototype._validateMapping =
   };
 
 /**
-  * Serialize the accumulated mappings in to the stream of base 64 VLQs
-  * specified by the source map format.
-  */
+ * Serialize the accumulated mappings in to the stream of base 64 VLQs
+ * specified by the source map format.
+ */
 SourceMapGenerator.prototype._serializeMappings =
   function SourceMapGenerator_serializeMappings() {
     var previousGeneratedColumn = 0;
@@ -8143,8 +8143,8 @@ SourceMapGenerator.prototype._generateSourcesContent =
   };
 
 /**
-  * Externalize the source map.
-  */
+ * Externalize the source map.
+ */
 SourceMapGenerator.prototype.toJSON = function SourceMapGenerator_toJSON() {
   var map = {
     version: this._version,
@@ -8169,8 +8169,8 @@ SourceMapGenerator.prototype.toJSON = function SourceMapGenerator_toJSON() {
 };
 
 /**
-  * Render the source map being generated to a string.
-  */
+ * Render the source map being generated to a string.
+ */
 SourceMapGenerator.prototype.toString = function SourceMapGenerator_toString() {
   return JSON.stringify(this.toJSON());
 };

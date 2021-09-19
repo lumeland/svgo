@@ -9,7 +9,6 @@ export const description = "removes <script> elements (disabled by default)";
  *
  * https://www.w3.org/TR/SVG11/script.html
  *
- *
  * @author Patrick Klingemann
  */
 export function fn() {
