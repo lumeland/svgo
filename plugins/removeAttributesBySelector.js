@@ -1,5 +1,7 @@
-export const type = "perItem";
+import { querySelectorAll } from "../lib/xast.js";
 
+export const name = "removeAttributesBySelector";
+export const type = "visitor";
 export const active = false;
 
 export const description =
@@ -8,44 +10,61 @@ export const description =
 /**
  * Removes attributes of elements that match a css selector.
  *
- * @param {Object} item current iteration item
- * @param {Object} params plugin params
- * @return {Boolean} if false, item will be filtered out
- *
  * @example
  * <caption>A selector removing a single attribute</caption>
- * plugins:
- *   - removeAttributesBySelector:
+ * plugins: [
+ *   {
+ *    name: "removeAttributesBySelector",
+ *    params: {
  *       selector: "[fill='#00ff00']"
  *       attributes: "fill"
+ *    }
+ *   }
+ * ]
  *
  * <rect x="0" y="0" width="100" height="100" fill="#00ff00" stroke="#00ff00"/>
  *   ↓
  * <rect x="0" y="0" width="100" height="100" stroke="#00ff00"/>
  *
  * <caption>A selector removing multiple attributes</caption>
- * plugins:
- *   - removeAttributesBySelector:
+ * plugins: [
+ *  {
+ *   name: "removeAttributesBySelector",
+ *   params: {
  *       selector: "[fill='#00ff00']"
- *       attributes:
- *         - fill
- *         - stroke
+ *       attributes: [
+ *         "fill",
+ *         "stroke"
+ *      ]
+ *    }
+ * }
+ * ]
  *
  * <rect x="0" y="0" width="100" height="100" fill="#00ff00" stroke="#00ff00"/>
  *   ↓
  * <rect x="0" y="0" width="100" height="100"/>
  *
  * <caption>Multiple selectors removing attributes</caption>
- * plugins:
- *   - removeAttributesBySelector:
- *       selectors:
- *         - selector: "[fill='#00ff00']"
- *           attributes: "fill"
- *
- *         - selector: "#remove"
- *           attributes:
- *             - stroke
- *             - id
+ * plugins: [
+ *  {
+ *    name: "removeAttributesBySelector",
+ *    params: {
+ *       selectors: [
+ *          {
+ *             selector: "[fill='#00ff00']"
+ *             attributes: "fill"
+ *          },
+ *         {
+ *            selector: "#remove"
+ *           attributes: [
+ *            "stroke",
+ *            "id"
+ *          ]
+ *        }
+ *      ]
+ *   }
+ * }
+ * ]
  *
  * <rect x="0" y="0" width="100" height="100" fill="#00ff00" stroke="#00ff00"/>
  *   ↓
@@ -55,18 +74,21 @@ export const description =
  *
  * @author Bradley Mease
  */
-export function fn(item, params) {
-  var selectors = Array.isArray(params.selectors) ? params.selectors : [params];
-
-  selectors.map(({ selector, attributes }) => {
-    if (item.matches(selector)) {
+export function fn(root, params) {
+  const selectors = Array.isArray(params.selectors)
+    ? params.selectors
+    : [params];
+  for (const { selector, attributes } of selectors) {
+    const nodes = querySelectorAll(root, selector);
+    for (const node of nodes) {
       if (Array.isArray(attributes)) {
         for (const name of attributes) {
-          delete item.attributes[name];
+          delete node.attributes[name];
         }
       } else {
-        delete item.attributes[attributes];
+        delete node.attributes[attributes];
       }
     }
-  });
+  }
+  return {};
 }

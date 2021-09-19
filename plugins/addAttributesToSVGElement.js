@@ -1,7 +1,4 @@
-import { closestByName } from "../lib/xast.js";
-
-export const type = "perItem";
-
+export const type = "visitor";
 export const active = false;
 
 export const description = "adds attributes to an outer <svg> element";
@@ -50,32 +47,32 @@ plugins: [
  *
  * @author April Arcus
  */
-export function fn(node, params) {
-  if (
-    node.type === "element" &&
-    node.name === "svg" &&
-    closestByName(node.parentNode, "svg") == null
-  ) {
-    if (!params || !(Array.isArray(params.attributes) || params.attribute)) {
-      console.error(ENOCLS);
-      return;
-    }
-
-    const attributes = params.attributes || [params.attribute];
-
-    for (const attribute of attributes) {
-      if (typeof attribute === "string") {
-        if (node.attributes[attribute] == null) {
-          node.attributes[attribute] = undefined;
-        }
-      }
-      if (typeof attribute === "object") {
-        for (const key of Object.keys(attribute)) {
-          if (node.attributes[key] == null) {
-            node.attributes[key] = attribute[key];
+export function fn(root, params) {
+  if (!Array.isArray(params.attributes) && !params.attribute) {
+    console.error(ENOCLS);
+    return;
+  }
+  const attributes = params.attributes || [params.attribute];
+  return {
+    element: {
+      enter: (node, parentNode) => {
+        if (node.name === "svg" && parentNode.type === "root") {
+          for (const attribute of attributes) {
+            if (typeof attribute === "string") {
+              if (node.attributes[attribute] == null) {
+                node.attributes[attribute] = undefined;
+              }
+            }
+            if (typeof attribute === "object") {
+              for (const key of Object.keys(attribute)) {
+                if (node.attributes[key] == null) {
+                  node.attributes[key] = attribute[key];
+                }
+              }
+            }
           }
         }
-      }
-    }
-  }
+      },
+    },
+  };
 }
