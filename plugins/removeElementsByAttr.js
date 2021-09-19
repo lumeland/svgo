@@ -9,9 +9,7 @@ export const description =
 /**
  * Remove arbitrary SVG elements by ID or className.
  *
- * @param id
- *   examples:
- *
+ * @example id
  *     > single: remove element with ID of `elementID`
  *     ---
  *     removeElementsByAttr:
@@ -24,9 +22,7 @@ export const description =
  *         - 'elementID'
  *         - 'anotherID'
  *
- * @param class
- *   examples:
- *
+ * @example class
  *     > single: remove all elements with class of `elementClass`
  *     ---
  *     removeElementsByAttr:
@@ -40,6 +36,11 @@ export const description =
  *         - 'anotherClass'
  *
  * @author Eli Dupuis (@elidupuis)
+ *
+ * @type {import('../lib/types').Plugin<{
+ *   id?: string | Array<string>,
+ *   class?: string | Array<string>
+ * }>}
  */
 export function fn(root, params) {
   const ids = params.id == null

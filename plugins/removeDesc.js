@@ -14,6 +14,8 @@ const standardDescs = /^(Created with|Created using)/;
  * https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc
  *
  * @author Daniel Wabyick
+ *
+ * @type {import('../lib/types').Plugin<{ removeAny?: boolean }>}
  */
 export function fn(root, params) {
   const { removeAny = true } = params;

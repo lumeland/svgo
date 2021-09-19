@@ -46,11 +46,16 @@ plugins: [
  * Add attributes to an outer <svg> element. Example config:
  *
  * @author April Arcus
+ *
+ * @type {import('../lib/types').Plugin<{
+ *   attribute?: string | Record<string, null | string>,
+ *   attributes?: Array<string | Record<string, null | string>>
+ * }>}
  */
 export function fn(root, params) {
   if (!Array.isArray(params.attributes) && !params.attribute) {
     console.error(ENOCLS);
-    return;
+    return null;
   }
   const attributes = params.attributes || [params.attribute];
   return {
@@ -60,12 +65,14 @@ export function fn(root, params) {
           for (const attribute of attributes) {
             if (typeof attribute === "string") {
               if (node.attributes[attribute] == null) {
+                // @ts-ignore disallow explicit nullable attribute value
                 node.attributes[attribute] = undefined;
               }
             }
             if (typeof attribute === "object") {
               for (const key of Object.keys(attribute)) {
                 if (node.attributes[key] == null) {
+                  // @ts-ignore disallow explicit nullable attribute value
                   node.attributes[key] = attribute[key];
                 }
               }

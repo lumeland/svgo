@@ -25,6 +25,8 @@ export const description = "removes doctype declaration";
  * ]>
  *
  * @author Kir Belevich
+ *
+ * @type {import('../lib/types').Plugin<void>}
  */
 export function fn() {
   return {

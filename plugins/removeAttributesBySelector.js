@@ -70,9 +70,11 @@ export const description =
  *   ↓
  * <rect x="0" y="0" width="100" height="100"/>
  *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors|MDN CSS Selectors}
+ * @link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors|MDN CSS Selectors
  *
  * @author Bradley Mease
+ *
+ * @type {import('../lib/types').Plugin<any>}
  */
 export function fn(root, params) {
   const selectors = Array.isArray(params.selectors)
@@ -81,12 +83,14 @@ export function fn(root, params) {
   for (const { selector, attributes } of selectors) {
     const nodes = querySelectorAll(root, selector);
     for (const node of nodes) {
-      if (Array.isArray(attributes)) {
-        for (const name of attributes) {
-          delete node.attributes[name];
+      if (node.type === "element") {
+        if (Array.isArray(attributes)) {
+          for (const name of attributes) {
+            delete node.attributes[name];
+          }
+        } else {
+          delete node.attributes[attributes];
         }
-      } else {
-        delete node.attributes[attributes];
       }
     }
   }
