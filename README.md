@@ -1,5 +1,11 @@
 # SVGO for Deno
 
+> DEPRECATED
+> SVGO provides esm module for browsers, compatible with Deno.
+> https://unpkg.com/svgo@2.7.0/dist/svgo.browser.js
+
+---
+
 [SVGO](https://github.com/svg/svgo) fork to make it work in Deno.
 
 ## Usage
